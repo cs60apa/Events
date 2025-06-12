@@ -1,6 +1,118 @@
-Tech Meetup Platform Development Guide
-This document provides a complete roadmap to build a platform for hosting tech meetup events (online or in-person). Organizers can sign up, create events, add details (title, description, location, date, opportunities, speakers), and manage profiles. The platform will use Next.js, Tailwind CSS, Shadcn UI, Convex for the database, Clerk for authentication, and Vercel for hosting—all on free tiers to avoid costs.
-Project Overview
+# TechMeet - Tech Meetup Platform
+
+A comprehensive platform for hosting and managing tech meetup events, built with modern web technologies.
+
+## 🚀 Features
+
+### Authentication & User Management
+- **Role-based Signup**: Choose between Event Organizer or Attendee roles
+- **Secure Authentication**: Email-based authentication system
+- **User Profiles**: Complete profile management with social links and skills
+
+### Event Management (Organizers)
+- **Event Creation**: Create detailed events with all necessary information
+- **Event Types**: Support for online, in-person, and hybrid events
+- **Event Dashboard**: Comprehensive dashboard to manage all events
+- **Event Analytics**: Track performance, registrations, and attendee engagement
+- **Attendee Management**: View and manage event registrations
+- **Event Editing**: Full CRUD operations for events
+
+### Event Discovery (Attendees)
+- **Browse Events**: Discover upcoming tech events
+- **Event Registration**: Simple registration process
+- **Event Details**: Comprehensive event information pages
+- **Search & Filter**: Find events by category, type, and keywords
+
+### Dashboard Features
+- **Role-based Dashboards**: Different interfaces for organizers vs attendees
+- **Notifications System**: Stay updated with event changes and reminders
+- **Profile Management**: Manage personal information and preferences
+- **Settings**: Customize notifications, privacy, and preferences
+- **Analytics**: Detailed insights for event organizers
+
+### Additional Features
+- **Responsive Design**: Works seamlessly on all devices
+- **Modern UI**: Clean, intuitive interface built with Tailwind CSS
+- **Real-time Data**: Powered by Convex for real-time updates
+- **TypeScript**: Fully typed for better development experience
+
+## 🛠 Tech Stack
+
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Backend**: Convex (real-time database)
+- **Authentication**: Custom auth system
+- **Icons**: Lucide React
+- **Development**: ESLint, TypeScript strict mode
+
+## 📁 Project Structure
+
+```
+/
+├── app/                      # Next.js app router
+│   ├── auth/                # Authentication pages
+│   ├── dashboard/           # User dashboard
+│   │   ├── events/         # Event management
+│   │   ├── profile/        # User profile
+│   │   ├── notifications/  # Notifications
+│   │   ├── settings/       # User settings
+│   │   └── analytics/      # Event analytics
+│   └── events/             # Public event pages
+├── components/              # Reusable components
+│   ├── ui/                 # shadcn/ui components
+│   └── dashboard/          # Dashboard-specific components
+├── convex/                 # Convex backend
+│   ├── schema.ts           # Database schema
+│   ├── events.ts           # Event functions
+│   ├── users.ts            # User functions
+│   └── notifications.ts    # Notification functions
+├── providers/              # React context providers
+├── lib/                    # Utility functions
+└── hooks/                  # Custom React hooks
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- pnpm (recommended) or npm
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd events
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Set up Convex**
+   ```bash
+   npx convex dev
+   ```
+
+4. **Configure environment variables**
+   Create a `.env.local` file:
+   ```
+   CONVEX_DEPLOYMENT=your-deployment-url
+   NEXT_PUBLIC_CONVEX_URL=your-convex-url
+   ```
+
+5. **Start the development server**
+   ```bash
+   pnpm dev
+   ```
+
+6. **Visit the application**
+   Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+**Happy event organizing! 🎉**
 
 Objective: Build a web platform where organizers can create and manage tech meetup events, and users can view events.
 Features:
