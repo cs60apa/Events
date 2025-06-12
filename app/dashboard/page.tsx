@@ -56,7 +56,7 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
-            Welcome back, {user.name}! 👋
+            Welcome back, {user?.name ?? "User"}! 👋
           </h1>
           <p className="mt-2 text-gray-600">
             Here&apos;s what&apos;s happening with your events today.
@@ -195,7 +195,7 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">
-          Welcome back, {user.name}! 👋
+          Welcome back, {user?.name ?? "User"}! 👋
         </h1>
         <p className="mt-2 text-gray-600">
           Discover new events and connect with the tech community.
