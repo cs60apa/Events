@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/providers/auth-provider";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
-  UserIcon, 
   MailIcon, 
   MapPinIcon, 
   BuildingIcon,
@@ -27,7 +24,6 @@ import {
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
-  const updateUser = useMutation(api.users.updateUser);
 
   const [formData, setFormData] = useState({
     name: "",

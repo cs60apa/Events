@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/providers/auth-provider";
-import { CalendarDays, Plus, Users, BarChart3, Settings, Calendar, User, Bookmark, Bell } from "lucide-react";
+import { CalendarDays, Plus, BarChart3, Settings, Calendar, User, Bookmark, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";

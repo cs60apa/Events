@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "@/providers/auth-provider";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +26,7 @@ import {
   EyeIcon,
   PencilIcon,
   TrashIcon,
-  CopyIcon,
-  ShareIcon
+  CopyIcon
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -58,7 +58,7 @@ export default function EventsPage() {
 
   // Get events for the current organizer
   const events = useQuery(api.events.getEventsByOrganizer, 
-    user ? { organizerId: user._id as any } : "skip"
+    user ? { organizerId: user._id as Id<"users"> } : "skip"
   );
 
   const deleteEvent = useMutation(api.events.deleteEvent);
@@ -84,7 +84,7 @@ export default function EventsPage() {
   const handleDeleteEvent = async (eventId: string) => {
     if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
       try {
-        await deleteEvent({ eventId: eventId as any });
+        await deleteEvent({ eventId: eventId as Id<"events"> });
       } catch (error) {
         console.error("Failed to delete event:", error);
         alert("Failed to delete event. Please try again.");
@@ -96,8 +96,8 @@ export default function EventsPage() {
     const newStatus = currentStatus === "published" ? "draft" : "published";
     try {
       await updateEvent({ 
-        eventId: eventId as any, 
-        status: newStatus as any 
+        eventId: eventId as Id<"events">, 
+        status: newStatus as "draft" | "published" | "cancelled"
       });
     } catch (error) {
       console.error("Failed to update event status:", error);

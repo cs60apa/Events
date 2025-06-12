@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -57,7 +58,7 @@ export default function EventAttendeesPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   // Get event details
-  const event = useQuery(api.events.getEventById, { eventId: eventId as any });
+  const event = useQuery(api.events.getEventById, { eventId: eventId as Id<"events"> });
   
   // Mock registrations data (in real app, would come from Convex)
   const mockRegistrations: Registration[] = [

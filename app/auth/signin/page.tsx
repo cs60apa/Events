@@ -37,7 +37,8 @@ export default function SignInPage() {
       localStorage.setItem("currentUser", JSON.stringify(user));
       
       router.push("/dashboard");
-    } catch (_error) {
+    } catch (error) {
+      console.error("Sign in failed:", error);
       setError("Invalid email or password");
     } finally {
       setIsLoading(false);

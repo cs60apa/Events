@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,7 @@ export default function EditEventPage() {
   const eventId = params.id as string;
 
   // Get event data
-  const event = useQuery(api.events.getEventById, { eventId: eventId as any });
+  const event = useQuery(api.events.getEventById, { eventId: eventId as Id<"events"> });
   const updateEvent = useMutation(api.events.updateEvent);
   const deleteEvent = useMutation(api.events.deleteEvent);
 
@@ -85,7 +86,7 @@ export default function EditEventPage() {
 
     try {
       const updateData = {
-        eventId: eventId as any,
+        eventId: eventId as Id<"events">,
         title: formData.title,
         description: formData.description,
         type: formData.type,
@@ -119,7 +120,7 @@ export default function EditEventPage() {
     }
 
     try {
-      await deleteEvent({ eventId: eventId as any });
+      await deleteEvent({ eventId: eventId as Id<"events"> });
       router.push("/dashboard/events");
     } catch (error) {
       console.error("Failed to delete event:", error);
