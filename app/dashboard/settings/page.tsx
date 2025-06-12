@@ -6,18 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   SaveIcon,
   BellIcon,
   ShieldIcon,
   GlobeIcon,
-  TrashIcon
+  TrashIcon,
 } from "lucide-react";
 
 export default function SettingsPage() {
   const { user } = useAuth();
-  
+
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     eventReminders: true,
@@ -45,24 +51,24 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNotificationChange = (key: string, value: boolean) => {
-    setNotifications(prev => ({ ...prev, [key]: value }));
+    setNotifications((prev) => ({ ...prev, [key]: value }));
   };
 
   const handlePreferenceChange = (key: string, value: string) => {
-    setPreferences(prev => ({ ...prev, [key]: value }));
+    setPreferences((prev) => ({ ...prev, [key]: value }));
   };
 
   const handlePrivacyChange = (key: string, value: boolean | string) => {
-    setPrivacy(prev => ({ ...prev, [key]: value }));
+    setPrivacy((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSaveSettings = async () => {
     setIsLoading(true);
-    
+
     try {
       // Here you would normally save to Convex
       // For now, just simulate a save
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       alert("Settings saved successfully!");
     } catch (error) {
       console.error("Failed to save settings:", error);
@@ -73,17 +79,27 @@ export default function SettingsPage() {
   };
 
   const handleDeleteAccount = async () => {
-    if (!confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
       return;
     }
 
-    if (!confirm("This will permanently delete all your data, events, and registrations. Are you absolutely sure?")) {
+    if (
+      !confirm(
+        "This will permanently delete all your data, events, and registrations. Are you absolutely sure?"
+      )
+    ) {
       return;
     }
 
     try {
       // Here you would call the delete account function
-      alert("Account deletion request submitted. You will receive a confirmation email.");
+      alert(
+        "Account deletion request submitted. You will receive a confirmation email."
+      );
     } catch (error) {
       console.error("Failed to delete account:", error);
       alert("Failed to delete account. Please contact support.");
@@ -104,7 +120,9 @@ export default function SettingsPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600 mt-1">Manage your account settings and preferences</p>
+        <p className="text-gray-600 mt-1">
+          Manage your account settings and preferences
+        </p>
       </div>
 
       {/* Notification Settings */}
@@ -120,60 +138,80 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="email-notifications">Email Notifications</Label>
-                <p className="text-sm text-gray-500">Receive notifications via email</p>
+                <p className="text-sm text-gray-500">
+                  Receive notifications via email
+                </p>
               </div>
               <Switch
                 id="email-notifications"
                 checked={notifications.emailNotifications}
-                onCheckedChange={(checked) => handleNotificationChange("emailNotifications", checked)}
+                onCheckedChange={(checked) =>
+                  handleNotificationChange("emailNotifications", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="event-reminders">Event Reminders</Label>
-                <p className="text-sm text-gray-500">Get reminded before events start</p>
+                <p className="text-sm text-gray-500">
+                  Get reminded before events start
+                </p>
               </div>
               <Switch
                 id="event-reminders"
                 checked={notifications.eventReminders}
-                onCheckedChange={(checked) => handleNotificationChange("eventReminders", checked)}
+                onCheckedChange={(checked) =>
+                  handleNotificationChange("eventReminders", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="event-updates">Event Updates</Label>
-                <p className="text-sm text-gray-500">Notifications about event changes</p>
+                <p className="text-sm text-gray-500">
+                  Notifications about event changes
+                </p>
               </div>
               <Switch
                 id="event-updates"
                 checked={notifications.eventUpdates}
-                onCheckedChange={(checked) => handleNotificationChange("eventUpdates", checked)}
+                onCheckedChange={(checked) =>
+                  handleNotificationChange("eventUpdates", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="weekly-digest">Weekly Digest</Label>
-                <p className="text-sm text-gray-500">Summary of upcoming events</p>
+                <p className="text-sm text-gray-500">
+                  Summary of upcoming events
+                </p>
               </div>
               <Switch
                 id="weekly-digest"
                 checked={notifications.weeklyDigest}
-                onCheckedChange={(checked) => handleNotificationChange("weeklyDigest", checked)}
+                onCheckedChange={(checked) =>
+                  handleNotificationChange("weeklyDigest", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="marketing-emails">Marketing Emails</Label>
-                <p className="text-sm text-gray-500">Promotional content and updates</p>
+                <p className="text-sm text-gray-500">
+                  Promotional content and updates
+                </p>
               </div>
               <Switch
                 id="marketing-emails"
                 checked={notifications.marketingEmails}
-                onCheckedChange={(checked) => handleNotificationChange("marketingEmails", checked)}
+                onCheckedChange={(checked) =>
+                  handleNotificationChange("marketingEmails", checked)
+                }
               />
             </div>
           </div>
@@ -192,15 +230,28 @@ export default function SettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <Label htmlFor="timezone">Timezone</Label>
-              <Select value={preferences.timezone} onValueChange={(value) => handlePreferenceChange("timezone", value)}>
+              <Select
+                value={preferences.timezone}
+                onValueChange={(value) =>
+                  handlePreferenceChange("timezone", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select timezone" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
-                  <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
-                  <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
-                  <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                  <SelectItem value="America/New_York">
+                    Eastern Time (ET)
+                  </SelectItem>
+                  <SelectItem value="America/Chicago">
+                    Central Time (CT)
+                  </SelectItem>
+                  <SelectItem value="America/Denver">
+                    Mountain Time (MT)
+                  </SelectItem>
+                  <SelectItem value="America/Los_Angeles">
+                    Pacific Time (PT)
+                  </SelectItem>
                   <SelectItem value="UTC">UTC</SelectItem>
                   <SelectItem value="Europe/London">London (GMT)</SelectItem>
                   <SelectItem value="Europe/Berlin">Berlin (CET)</SelectItem>
@@ -211,7 +262,12 @@ export default function SettingsPage() {
 
             <div>
               <Label htmlFor="language">Language</Label>
-              <Select value={preferences.language} onValueChange={(value) => handlePreferenceChange("language", value)}>
+              <Select
+                value={preferences.language}
+                onValueChange={(value) =>
+                  handlePreferenceChange("language", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
@@ -227,7 +283,12 @@ export default function SettingsPage() {
 
             <div>
               <Label htmlFor="theme">Theme</Label>
-              <Select value={preferences.theme} onValueChange={(value) => handlePreferenceChange("theme", value)}>
+              <Select
+                value={preferences.theme}
+                onValueChange={(value) =>
+                  handlePreferenceChange("theme", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select theme" />
                 </SelectTrigger>
@@ -241,7 +302,12 @@ export default function SettingsPage() {
 
             <div>
               <Label htmlFor="date-format">Date Format</Label>
-              <Select value={preferences.dateFormat} onValueChange={(value) => handlePreferenceChange("dateFormat", value)}>
+              <Select
+                value={preferences.dateFormat}
+                onValueChange={(value) =>
+                  handlePreferenceChange("dateFormat", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select date format" />
                 </SelectTrigger>
@@ -255,7 +321,12 @@ export default function SettingsPage() {
 
             <div>
               <Label htmlFor="time-format">Time Format</Label>
-              <Select value={preferences.timeFormat} onValueChange={(value) => handlePreferenceChange("timeFormat", value)}>
+              <Select
+                value={preferences.timeFormat}
+                onValueChange={(value) =>
+                  handlePreferenceChange("timeFormat", value)
+                }
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select time format" />
                 </SelectTrigger>
@@ -280,7 +351,12 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div>
             <Label htmlFor="profile-visibility">Profile Visibility</Label>
-            <Select value={privacy.profileVisibility} onValueChange={(value) => handlePrivacyChange("profileVisibility", value)}>
+            <Select
+              value={privacy.profileVisibility}
+              onValueChange={(value) =>
+                handlePrivacyChange("profileVisibility", value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select visibility" />
               </SelectTrigger>
@@ -299,48 +375,66 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="show-email">Show Email Address</Label>
-                <p className="text-sm text-gray-500">Display email on your profile</p>
+                <p className="text-sm text-gray-500">
+                  Display email on your profile
+                </p>
               </div>
               <Switch
                 id="show-email"
                 checked={privacy.showEmail}
-                onCheckedChange={(checked) => handlePrivacyChange("showEmail", checked)}
+                onCheckedChange={(checked) =>
+                  handlePrivacyChange("showEmail", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="show-location">Show Location</Label>
-                <p className="text-sm text-gray-500">Display location on your profile</p>
+                <p className="text-sm text-gray-500">
+                  Display location on your profile
+                </p>
               </div>
               <Switch
                 id="show-location"
                 checked={privacy.showLocation}
-                onCheckedChange={(checked) => handlePrivacyChange("showLocation", checked)}
+                onCheckedChange={(checked) =>
+                  handlePrivacyChange("showLocation", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="show-company">Show Company</Label>
-                <p className="text-sm text-gray-500">Display company on your profile</p>
+                <p className="text-sm text-gray-500">
+                  Display company on your profile
+                </p>
               </div>
               <Switch
                 id="show-company"
                 checked={privacy.showCompany}
-                onCheckedChange={(checked) => handlePrivacyChange("showCompany", checked)}
+                onCheckedChange={(checked) =>
+                  handlePrivacyChange("showCompany", checked)
+                }
               />
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="event-recommendations">Event Recommendations</Label>
-                <p className="text-sm text-gray-500">Allow personalized recommendations</p>
+                <Label htmlFor="event-recommendations">
+                  Event Recommendations
+                </Label>
+                <p className="text-sm text-gray-500">
+                  Allow personalized recommendations
+                </p>
               </div>
               <Switch
                 id="event-recommendations"
                 checked={privacy.allowEventRecommendations}
-                onCheckedChange={(checked) => handlePrivacyChange("allowEventRecommendations", checked)}
+                onCheckedChange={(checked) =>
+                  handlePrivacyChange("allowEventRecommendations", checked)
+                }
               />
             </div>
           </div>
@@ -349,8 +443,8 @@ export default function SettingsPage() {
 
       {/* Save Settings */}
       <div className="flex justify-between items-center">
-        <Button 
-          onClick={handleSaveSettings} 
+        <Button
+          onClick={handleSaveSettings}
           disabled={isLoading}
           className="bg-blue-600 hover:bg-blue-700"
         >
@@ -378,10 +472,11 @@ export default function SettingsPage() {
             <div>
               <h4 className="font-medium text-red-600">Delete Account</h4>
               <p className="text-sm text-gray-600 mb-4">
-                Permanently delete your account and all associated data. This action cannot be undone.
+                Permanently delete your account and all associated data. This
+                action cannot be undone.
               </p>
-              <Button 
-                variant="destructive" 
+              <Button
+                variant="destructive"
                 onClick={handleDeleteAccount}
                 className="bg-red-600 hover:bg-red-700"
               >

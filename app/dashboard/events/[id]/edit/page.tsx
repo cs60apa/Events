@@ -11,7 +11,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeftIcon, SaveIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
@@ -23,7 +29,9 @@ export default function EditEventPage() {
   const eventId = params.id as string;
 
   // Get event data
-  const event = useQuery(api.events.getEventById, { eventId: eventId as Id<"events"> });
+  const event = useQuery(api.events.getEventById, {
+    eventId: eventId as Id<"events">,
+  });
   const updateEvent = useMutation(api.events.updateEvent);
   const deleteEvent = useMutation(api.events.deleteEvent);
 
@@ -57,13 +65,19 @@ export default function EditEventPage() {
         type: event.type || "online",
         location: event.location || "",
         virtualLink: event.virtualLink || "",
-        startDate: event.startDate ? new Date(event.startDate).toISOString().slice(0, 16) : "",
-        endDate: event.endDate ? new Date(event.endDate).toISOString().slice(0, 16) : "",
+        startDate: event.startDate
+          ? new Date(event.startDate).toISOString().slice(0, 16)
+          : "",
+        endDate: event.endDate
+          ? new Date(event.endDate).toISOString().slice(0, 16)
+          : "",
         maxAttendees: event.maxAttendees?.toString() || "",
         category: event.category || "",
         tags: event.tags?.join(", ") || "",
         isPublic: event.isPublic ?? true,
-        registrationDeadline: event.registrationDeadline ? new Date(event.registrationDeadline).toISOString().slice(0, 16) : "",
+        registrationDeadline: event.registrationDeadline
+          ? new Date(event.registrationDeadline).toISOString().slice(0, 16)
+          : "",
         price: event.price?.toString() || "",
         currency: event.currency || "USD",
         requirements: event.requirements || "",
@@ -72,9 +86,9 @@ export default function EditEventPage() {
   }, [event]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -94,9 +108,14 @@ export default function EditEventPage() {
         virtualLink: formData.virtualLink || undefined,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : undefined,
+        maxAttendees: formData.maxAttendees
+          ? parseInt(formData.maxAttendees)
+          : undefined,
         category: formData.category,
-        tags: formData.tags.split(",").map(tag => tag.trim()).filter(tag => tag),
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
         isPublic: formData.isPublic,
         registrationDeadline: formData.registrationDeadline || undefined,
         price: formData.price ? parseFloat(formData.price) : undefined,
@@ -115,7 +134,11 @@ export default function EditEventPage() {
   };
 
   const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you sure you want to delete this event? This action cannot be undone."
+      )
+    ) {
       return;
     }
 
@@ -172,7 +195,7 @@ export default function EditEventPage() {
             <p className="text-gray-600 mt-1">Update your event details</p>
           </div>
         </div>
-        
+
         <Button
           variant="destructive"
           onClick={handleDelete}
@@ -208,7 +231,9 @@ export default function EditEventPage() {
                 <Textarea
                   id="description"
                   value={formData.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   placeholder="Describe your event"
                   rows={4}
                   required
@@ -217,17 +242,28 @@ export default function EditEventPage() {
 
               <div>
                 <Label htmlFor="category">Category *</Label>
-                <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) =>
+                    handleInputChange("category", value)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="web-development">Web Development</SelectItem>
-                    <SelectItem value="mobile-development">Mobile Development</SelectItem>
+                    <SelectItem value="web-development">
+                      Web Development
+                    </SelectItem>
+                    <SelectItem value="mobile-development">
+                      Mobile Development
+                    </SelectItem>
                     <SelectItem value="data-science">Data Science</SelectItem>
                     <SelectItem value="devops">DevOps</SelectItem>
                     <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="product-management">Product Management</SelectItem>
+                    <SelectItem value="product-management">
+                      Product Management
+                    </SelectItem>
                     <SelectItem value="startup">Startup</SelectItem>
                     <SelectItem value="networking">Networking</SelectItem>
                     <SelectItem value="other">Other</SelectItem>
@@ -237,7 +273,10 @@ export default function EditEventPage() {
 
               <div>
                 <Label htmlFor="type">Event Type *</Label>
-                <Select value={formData.type} onValueChange={(value) => handleInputChange("type", value)}>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value) => handleInputChange("type", value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
@@ -257,7 +296,9 @@ export default function EditEventPage() {
                 <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => handleInputChange("location", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("location", e.target.value)
+                  }
                   placeholder="Enter venue address"
                 />
               </div>
@@ -269,7 +310,9 @@ export default function EditEventPage() {
                 <Input
                   id="virtualLink"
                   value={formData.virtualLink}
-                  onChange={(e) => handleInputChange("virtualLink", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("virtualLink", e.target.value)
+                  }
                   placeholder="Zoom, Meet, or other virtual platform link"
                 />
               </div>
@@ -283,7 +326,9 @@ export default function EditEventPage() {
                   id="startDate"
                   type="datetime-local"
                   value={formData.startDate}
-                  onChange={(e) => handleInputChange("startDate", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("startDate", e.target.value)
+                  }
                   required
                 />
               </div>
@@ -308,19 +353,25 @@ export default function EditEventPage() {
                   id="maxAttendees"
                   type="number"
                   value={formData.maxAttendees}
-                  onChange={(e) => handleInputChange("maxAttendees", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("maxAttendees", e.target.value)
+                  }
                   placeholder="Leave empty for unlimited"
                   min="1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="registrationDeadline">Registration Deadline</Label>
+                <Label htmlFor="registrationDeadline">
+                  Registration Deadline
+                </Label>
                 <Input
                   id="registrationDeadline"
                   type="datetime-local"
                   value={formData.registrationDeadline}
-                  onChange={(e) => handleInputChange("registrationDeadline", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("registrationDeadline", e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -342,7 +393,12 @@ export default function EditEventPage() {
 
               <div>
                 <Label htmlFor="currency">Currency</Label>
-                <Select value={formData.currency} onValueChange={(value) => handleInputChange("currency", value)}>
+                <Select
+                  value={formData.currency}
+                  onValueChange={(value) =>
+                    handleInputChange("currency", value)
+                  }
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
@@ -375,7 +431,9 @@ export default function EditEventPage() {
               <Textarea
                 id="requirements"
                 value={formData.requirements}
-                onChange={(e) => handleInputChange("requirements", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("requirements", e.target.value)
+                }
                 placeholder="Any prerequisites or things attendees should bring"
                 rows={3}
               />
@@ -386,7 +444,9 @@ export default function EditEventPage() {
               <Switch
                 id="isPublic"
                 checked={formData.isPublic}
-                onCheckedChange={(checked) => handleInputChange("isPublic", checked)}
+                onCheckedChange={(checked) =>
+                  handleInputChange("isPublic", checked)
+                }
               />
               <Label htmlFor="isPublic">Make this event public</Label>
             </div>

@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CalendarDays, Mail } from "lucide-react";
@@ -35,7 +41,7 @@ export default function SignInPage() {
 
       setUser(user);
       localStorage.setItem("currentUser", JSON.stringify(user));
-      
+
       router.push("/dashboard");
     } catch (error) {
       console.error("Sign in failed:", error);
@@ -61,9 +67,7 @@ export default function SignInPage() {
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-            <CardDescription>
-              Sign in to your TechMeet account
-            </CardDescription>
+            <CardDescription>Sign in to your TechMeet account</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -101,13 +105,19 @@ export default function SignInPage() {
 
             <div className="mt-6 text-center text-sm text-gray-600">
               Don&apos;t have an account?{" "}
-              <Link href="/auth/signup" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link
+                href="/auth/signup"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Sign up
               </Link>
             </div>
 
             <div className="mt-4 text-center">
-              <Link href="/auth/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+              <Link
+                href="/auth/forgot-password"
+                className="text-sm text-blue-600 hover:text-blue-500"
+              >
                 Forgot your password?
               </Link>
             </div>

@@ -15,16 +15,26 @@ export function Footer() {
               <span className="text-xl font-bold">TechMeet</span>
             </Link>
             <p className="text-gray-400 text-sm">
-              Connecting tech enthusiasts through amazing events and meaningful networking opportunities.
+              Connecting tech enthusiasts through amazing events and meaningful
+              networking opportunities.
             </p>
             <div className="flex space-x-4 mt-6">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Twitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Github className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
                 <Linkedin className="h-5 w-5" />
               </a>
             </div>
@@ -35,22 +45,34 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Events</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/events" className="hover:text-white transition-colors">
+                <Link
+                  href="/events"
+                  className="hover:text-white transition-colors"
+                >
                   Browse Events
                 </Link>
               </li>
               <li>
-                <Link href="/events/upcoming" className="hover:text-white transition-colors">
+                <Link
+                  href="/events/upcoming"
+                  className="hover:text-white transition-colors"
+                >
                   Upcoming Events
                 </Link>
               </li>
               <li>
-                <Link href="/events/past" className="hover:text-white transition-colors">
+                <Link
+                  href="/events/past"
+                  className="hover:text-white transition-colors"
+                >
                   Past Events
                 </Link>
               </li>
               <li>
-                <Link href="/events/categories" className="hover:text-white transition-colors">
+                <Link
+                  href="/events/categories"
+                  className="hover:text-white transition-colors"
+                >
                   Categories
                 </Link>
               </li>
@@ -62,22 +84,34 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Community</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/organizers" className="hover:text-white transition-colors">
+                <Link
+                  href="/organizers"
+                  className="hover:text-white transition-colors"
+                >
                   For Organizers
                 </Link>
               </li>
               <li>
-                <Link href="/speakers" className="hover:text-white transition-colors">
+                <Link
+                  href="/speakers"
+                  className="hover:text-white transition-colors"
+                >
                   For Speakers
                 </Link>
               </li>
               <li>
-                <Link href="/volunteers" className="hover:text-white transition-colors">
+                <Link
+                  href="/volunteers"
+                  className="hover:text-white transition-colors"
+                >
                   Volunteers
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="hover:text-white transition-colors">
+                <Link
+                  href="/blog"
+                  className="hover:text-white transition-colors"
+                >
                   Blog
                 </Link>
               </li>
@@ -89,22 +123,34 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm text-gray-400">
               <li>
-                <Link href="/help" className="hover:text-white transition-colors">
+                <Link
+                  href="/help"
+                  className="hover:text-white transition-colors"
+                >
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
+                <Link
+                  href="/contact"
+                  className="hover:text-white transition-colors"
+                >
                   Contact Us
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">
+                <Link
+                  href="/privacy"
+                  className="hover:text-white transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-white transition-colors">
+                <Link
+                  href="/terms"
+                  className="hover:text-white transition-colors"
+                >
                   Terms of Service
                 </Link>
               </li>

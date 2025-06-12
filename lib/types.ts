@@ -107,7 +107,12 @@ export interface Notification {
   userId: Id<"users">;
   title: string;
   message: string;
-  type: "event_update" | "event_reminder" | "event_cancelled" | "registration_confirmed" | "new_opportunity";
+  type:
+    | "event_update"
+    | "event_reminder"
+    | "event_cancelled"
+    | "registration_confirmed"
+    | "new_opportunity";
   relatedEventId?: Id<"events">;
   isRead: boolean;
   createdAt: string;

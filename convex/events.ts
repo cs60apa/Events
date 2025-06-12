@@ -6,7 +6,11 @@ export const createEvent = mutation({
     title: v.string(),
     description: v.string(),
     organizer: v.id("users"),
-    type: v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid")),
+    type: v.union(
+      v.literal("online"),
+      v.literal("in-person"),
+      v.literal("hybrid")
+    ),
     location: v.optional(v.string()),
     virtualLink: v.optional(v.string()),
     startDate: v.string(),
@@ -40,7 +44,7 @@ export const getEventById = query({
 
     // Get organizer details
     const organizer = await ctx.db.get(event.organizer);
-    
+
     // Get speakers
     const speakers = await ctx.db
       .query("speakers")
@@ -65,7 +69,8 @@ export const getEventById = query({
       speakers,
       opportunities,
       registrationCount: registrations.length,
-      attendeeCount: registrations.filter(r => r.status === "attended").length,
+      attendeeCount: registrations.filter((r) => r.status === "attended")
+        .length,
     };
   },
 });
@@ -73,7 +78,9 @@ export const getEventById = query({
 export const getPublicEvents = query({
   args: {
     category: v.optional(v.string()),
-    type: v.optional(v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid"))),
+    type: v.optional(
+      v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid"))
+    ),
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
@@ -93,12 +100,15 @@ export const getPublicEvents = query({
     const events = await query.collect();
 
     // Sort by start date
-    const sortedEvents = events.sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    const sortedEvents = events.sort(
+      (a, b) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     );
 
     // Limit results if specified
-    const limitedEvents = args.limit ? sortedEvents.slice(0, args.limit) : sortedEvents;
+    const limitedEvents = args.limit
+      ? sortedEvents.slice(0, args.limit)
+      : sortedEvents;
 
     // Get organizer details for each event
     const eventsWithOrganizers = await Promise.all(
@@ -140,13 +150,15 @@ export const getEventsByOrganizer = query({
         return {
           ...event,
           registrationCount: registrations.length,
-          attendeeCount: registrations.filter(r => r.status === "attended").length,
+          attendeeCount: registrations.filter((r) => r.status === "attended")
+            .length,
         };
       })
     );
 
-    return eventsWithStats.sort((a, b) => 
-      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    return eventsWithStats.sort(
+      (a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
     );
   },
 });
@@ -156,7 +168,9 @@ export const updateEvent = mutation({
     eventId: v.id("events"),
     title: v.optional(v.string()),
     description: v.optional(v.string()),
-    type: v.optional(v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid"))),
+    type: v.optional(
+      v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid"))
+    ),
     location: v.optional(v.string()),
     virtualLink: v.optional(v.string()),
     startDate: v.optional(v.string()),
@@ -165,7 +179,13 @@ export const updateEvent = mutation({
     category: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
     imageUrl: v.optional(v.string()),
-    status: v.optional(v.union(v.literal("draft"), v.literal("published"), v.literal("cancelled"))),
+    status: v.optional(
+      v.union(
+        v.literal("draft"),
+        v.literal("published"),
+        v.literal("cancelled")
+      )
+    ),
     isPublic: v.optional(v.boolean()),
     registrationDeadline: v.optional(v.string()),
     price: v.optional(v.number()),
@@ -174,7 +194,7 @@ export const updateEvent = mutation({
   },
   handler: async (ctx, args) => {
     const { eventId, ...updates } = args;
-    
+
     // Remove undefined values
     const cleanUpdates = Object.fromEntries(
       Object.entries(updates).filter(([_, v]) => v !== undefined)
@@ -192,7 +212,7 @@ export const deleteEvent = mutation({
       .query("speakers")
       .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
       .collect();
-    
+
     const registrations = await ctx.db
       .query("registrations")
       .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
@@ -205,9 +225,9 @@ export const deleteEvent = mutation({
 
     // Delete all related records
     await Promise.all([
-      ...speakers.map(speaker => ctx.db.delete(speaker._id)),
-      ...registrations.map(reg => ctx.db.delete(reg._id)),
-      ...opportunities.map(opp => ctx.db.delete(opp._id)),
+      ...speakers.map((speaker) => ctx.db.delete(speaker._id)),
+      ...registrations.map((reg) => ctx.db.delete(reg._id)),
+      ...opportunities.map((opp) => ctx.db.delete(opp._id)),
     ]);
 
     // Delete the event
@@ -264,23 +284,25 @@ export const getUpcomingEvents = query({
   args: { limit: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const now = new Date().toISOString();
-    
+
     const events = await ctx.db
       .query("events")
       .withIndex("by_status", (q) => q.eq("status", "published"))
-      .filter((q) => q.and(
-        q.eq(q.field("isPublic"), true),
-        q.gte(q.field("startDate"), now)
-      ))
+      .filter((q) =>
+        q.and(q.eq(q.field("isPublic"), true), q.gte(q.field("startDate"), now))
+      )
       .collect();
 
     // Sort by start date
-    const sortedEvents = events.sort((a, b) => 
-      new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+    const sortedEvents = events.sort(
+      (a, b) =>
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
     );
 
     // Limit results if specified
-    const limitedEvents = args.limit ? sortedEvents.slice(0, args.limit) : sortedEvents;
+    const limitedEvents = args.limit
+      ? sortedEvents.slice(0, args.limit)
+      : sortedEvents;
 
     // Get organizer details for each event
     const eventsWithOrganizers = await Promise.all(
@@ -323,8 +345,9 @@ export const getEventRegistrations = query({
     );
 
     // Sort by registration date (most recent first)
-    return registrationsWithUsers.sort((a, b) => 
-      new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime()
+    return registrationsWithUsers.sort(
+      (a, b) =>
+        new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime()
     );
   },
 });
@@ -332,11 +355,15 @@ export const getEventRegistrations = query({
 export const updateRegistrationStatus = mutation({
   args: {
     registrationId: v.id("registrations"),
-    status: v.union(v.literal("registered"), v.literal("attended"), v.literal("cancelled")),
+    status: v.union(
+      v.literal("registered"),
+      v.literal("attended"),
+      v.literal("cancelled")
+    ),
   },
   handler: async (ctx, args) => {
     const updates: any = { status: args.status };
-    
+
     if (args.status === "attended") {
       updates.checkedInAt = new Date().toISOString();
     }
@@ -362,7 +389,7 @@ export const getEventAnalytics = query({
           .withIndex("by_event", (q) => q.eq("eventId", event._id))
           .collect();
 
-        const attendees = registrations.filter(r => r.status === "attended");
+        const attendees = registrations.filter((r) => r.status === "attended");
         const registrationCount = registrations.length;
         const attendeeCount = attendees.length;
 
@@ -375,14 +402,18 @@ export const getEventAnalytics = query({
           price: event.price,
           registrationCount,
           attendeeCount,
-          attendanceRate: registrationCount > 0 ? (attendeeCount / registrationCount) * 100 : 0,
+          attendanceRate:
+            registrationCount > 0
+              ? (attendeeCount / registrationCount) * 100
+              : 0,
           revenue: event.price ? event.price * registrationCount : 0,
         };
       })
     );
 
-    return eventsWithAnalytics.sort((a, b) => 
-      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    return eventsWithAnalytics.sort(
+      (a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
     );
   },
 });

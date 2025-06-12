@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, MapPin, Users, Trophy, Zap, Globe } from "lucide-react";
 import Link from "next/link";
@@ -10,12 +15,15 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <Header />
-      
+
       {/* Hero Section */}
       <section className="relative px-6 lg:px-8 pt-20 pb-24">
         <div className="mx-auto max-w-4xl text-center">
           <div className="mb-8">
-            <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium">
+            <Badge
+              variant="secondary"
+              className="mb-4 px-4 py-2 text-sm font-medium"
+            >
               🚀 Connect with the Tech Community
             </Badge>
           </div>
@@ -26,17 +34,24 @@ export default function LandingPage() {
             </span>
           </h1>
           <p className="mt-6 text-xl leading-8 text-gray-600 max-w-2xl mx-auto">
-            Join the largest community of tech enthusiasts. Attend meetups, network with professionals, 
-            and grow your career in technology.
+            Join the largest community of tech enthusiasts. Attend meetups,
+            network with professionals, and grow your career in technology.
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <Link href="/auth/signup">
-              <Button size="lg" className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button
+                size="lg"
+                className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+              >
                 Get Started
               </Button>
             </Link>
             <Link href="/events">
-              <Button variant="outline" size="lg" className="h-12 px-8 text-lg font-semibold">
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-12 px-8 text-lg font-semibold"
+              >
                 Browse Events
               </Button>
             </Link>
@@ -52,7 +67,8 @@ export default function LandingPage() {
               Everything you need to connect
             </h2>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Whether you&apos;re looking to learn, network, or share knowledge, our platform has you covered.
+              Whether you&apos;re looking to learn, network, or share knowledge,
+              our platform has you covered.
             </p>
           </div>
           <div className="mx-auto mt-16 grid max-w-6xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -63,7 +79,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Easy Event Discovery</CardTitle>
                 <CardDescription>
-                  Find events that match your interests and skill level with our smart filtering system.
+                  Find events that match your interests and skill level with our
+                  smart filtering system.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -75,7 +92,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Networking Opportunities</CardTitle>
                 <CardDescription>
-                  Connect with like-minded professionals and expand your network in the tech industry.
+                  Connect with like-minded professionals and expand your network
+                  in the tech industry.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -87,7 +105,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Career Growth</CardTitle>
                 <CardDescription>
-                  Discover job opportunities, mentorship programs, and career development events.
+                  Discover job opportunities, mentorship programs, and career
+                  development events.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -99,7 +118,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Easy Event Creation</CardTitle>
                 <CardDescription>
-                  Organize your own events with our intuitive event management tools and dashboard.
+                  Organize your own events with our intuitive event management
+                  tools and dashboard.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -111,7 +131,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Global & Local Events</CardTitle>
                 <CardDescription>
-                  Attend online events from anywhere or find local meetups in your city.
+                  Attend online events from anywhere or find local meetups in
+                  your city.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -123,7 +144,8 @@ export default function LandingPage() {
                 </div>
                 <CardTitle>Smart Recommendations</CardTitle>
                 <CardDescription>
-                  Get personalized event recommendations based on your interests and past attendance.
+                  Get personalized event recommendations based on your interests
+                  and past attendance.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -139,7 +161,8 @@ export default function LandingPage() {
               Join thousands of tech enthusiasts
             </h2>
             <p className="mt-6 text-lg leading-8 text-blue-100">
-              Our community is growing every day with passionate developers, designers, and tech leaders.
+              Our community is growing every day with passionate developers,
+              designers, and tech leaders.
             </p>
           </div>
           <div className="mx-auto mt-16 grid max-w-4xl grid-cols-1 gap-8 sm:grid-cols-3">
@@ -167,16 +190,24 @@ export default function LandingPage() {
               Ready to get started?
             </h2>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Join our community today and start discovering amazing tech events in your area.
+              Join our community today and start discovering amazing tech events
+              in your area.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link href="/auth/signup">
-                <Button size="lg" className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Button
+                  size="lg"
+                  className="h-12 px-8 text-lg font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
                   Sign Up Now
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button variant="ghost" size="lg" className="h-12 px-8 text-lg font-semibold text-gray-600 hover:text-gray-900">
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  className="h-12 px-8 text-lg font-semibold text-gray-600 hover:text-gray-900"
+                >
                   Contact Us
                 </Button>
               </Link>

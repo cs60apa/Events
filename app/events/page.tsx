@@ -4,9 +4,21 @@ import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -36,48 +48,51 @@ export default function EventsPage() {
     "Blockchain",
     "Gaming",
     "IoT",
-    "Cloud Computing"
+    "Cloud Computing",
   ];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
     });
   };
 
   const getEventTypeIcon = (type: string) => {
     switch (type) {
-      case 'online':
-        return '🌐';
-      case 'in-person':
-        return '📍';
-      case 'hybrid':
-        return '🔄';
+      case "online":
+        return "🌐";
+      case "in-person":
+        return "📍";
+      case "hybrid":
+        return "🔄";
       default:
-        return '📅';
+        return "📅";
     }
   };
 
   // Filter events based on search term (since we already filter by category/type in the query)
   const filteredEvents = (allEvents || []).filter((event: Event) => {
     if (!searchTerm) return true;
-    
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.tags?.some((tag: string) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
     return matchesSearch;
   });
 
@@ -88,7 +103,9 @@ export default function EventsPage() {
         <Header />
         <div className="pt-16">
           <div className="text-center py-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Loading...
+            </h2>
             <p className="text-gray-600">Loading events...</p>
           </div>
         </div>
@@ -100,7 +117,7 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      
+
       <div className="pt-16">
         {/* Hero Section */}
         <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
@@ -131,9 +148,12 @@ export default function EventsPage() {
                   />
                 </div>
               </div>
-              
+
               <div className="flex gap-4">
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
@@ -174,13 +194,18 @@ export default function EventsPage() {
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               {filteredEvents.map((event: any) => (
-                <Card key={event._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <Card
+                  key={event._id}
+                  className="overflow-hidden hover:shadow-lg transition-shadow"
+                >
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                       <Badge variant="secondary" className="mb-2">
                         {event.category}
                       </Badge>
-                      <span className="text-2xl">{getEventTypeIcon(event.type)}</span>
+                      <span className="text-2xl">
+                        {getEventTypeIcon(event.type)}
+                      </span>
                     </div>
                     <CardTitle className="text-xl leading-tight">
                       {event.title}
@@ -189,18 +214,19 @@ export default function EventsPage() {
                       {event.description}
                     </CardDescription>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     {/* Date & Time */}
                     <div className="flex items-center text-sm text-gray-600">
                       <Calendar className="h-4 w-4 mr-2" />
                       <span>
-                        {formatDate(event.startDate)} at {formatTime(event.startDate)}
+                        {formatDate(event.startDate)} at{" "}
+                        {formatTime(event.startDate)}
                       </span>
                     </div>
 
                     {/* Location */}
-                    {event.type !== 'online' && event.location && (
+                    {event.type !== "online" && event.location && (
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="h-4 w-4 mr-2" />
                         <span>{event.location}</span>
@@ -219,7 +245,7 @@ export default function EventsPage() {
                     {/* Price */}
                     <div className="flex items-center justify-between">
                       <div className="text-lg font-semibold text-gray-900">
-                        {event.price === 0 ? 'Free' : `$${event.price}`}
+                        {event.price === 0 ? "Free" : `$${event.price}`}
                       </div>
                       <div className="text-sm text-gray-500">
                         by {event.organizer.name}
@@ -242,9 +268,7 @@ export default function EventsPage() {
 
                     {/* Action Button */}
                     <Link href={`/events/${event._id}`}>
-                      <Button className="w-full mt-4">
-                        View Details
-                      </Button>
+                      <Button className="w-full mt-4">View Details</Button>
                     </Link>
                   </CardContent>
                 </Card>

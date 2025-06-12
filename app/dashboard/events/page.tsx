@@ -10,23 +10,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
-  CalendarIcon, 
-  MapPinIcon, 
-  UsersIcon, 
+import {
+  CalendarIcon,
+  MapPinIcon,
+  UsersIcon,
   MoreVerticalIcon,
   PlusIcon,
   SearchIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon,
-  CopyIcon
+  CopyIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,7 +57,8 @@ export default function EventsPage() {
   const [activeTab, setActiveTab] = useState("all");
 
   // Get events for the current organizer
-  const events = useQuery(api.events.getEventsByOrganizer, 
+  const events = useQuery(
+    api.events.getEventsByOrganizer,
     user ? { organizerId: user._id as Id<"users"> } : "skip"
   );
 
@@ -65,24 +66,30 @@ export default function EventsPage() {
   const updateEvent = useMutation(api.events.updateEvent);
 
   // Filter events based on search and tab
-  const filteredEvents = events?.filter((event: Event) => {
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    switch (activeTab) {
-      case "published":
-        return matchesSearch && event.status === "published";
-      case "draft":
-        return matchesSearch && event.status === "draft";
-      case "past":
-        return matchesSearch && new Date(event.endDate) < new Date();
-      default:
-        return matchesSearch;
-    }
-  }) || [];
+  const filteredEvents =
+    events?.filter((event: Event) => {
+      const matchesSearch =
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+      switch (activeTab) {
+        case "published":
+          return matchesSearch && event.status === "published";
+        case "draft":
+          return matchesSearch && event.status === "draft";
+        case "past":
+          return matchesSearch && new Date(event.endDate) < new Date();
+        default:
+          return matchesSearch;
+      }
+    }) || [];
 
   const handleDeleteEvent = async (eventId: string) => {
-    if (confirm("Are you sure you want to delete this event? This action cannot be undone.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete this event? This action cannot be undone."
+      )
+    ) {
       try {
         await deleteEvent({ eventId: eventId as Id<"events"> });
       } catch (error) {
@@ -95,9 +102,9 @@ export default function EventsPage() {
   const handleToggleStatus = async (eventId: string, currentStatus: string) => {
     const newStatus = currentStatus === "published" ? "draft" : "published";
     try {
-      await updateEvent({ 
-        eventId: eventId as Id<"events">, 
-        status: newStatus as "draft" | "published" | "cancelled"
+      await updateEvent({
+        eventId: eventId as Id<"events">,
+        status: newStatus as "draft" | "published" | "cancelled",
       });
     } catch (error) {
       console.error("Failed to update event status:", error);
@@ -107,11 +114,11 @@ export default function EventsPage() {
 
   const getStatusBadge = (status: string, startDate: string) => {
     const isPast = new Date(startDate) < new Date();
-    
+
     if (isPast) {
       return <Badge variant="secondary">Past</Badge>;
     }
-    
+
     switch (status) {
       case "published":
         return <Badge variant="default">Published</Badge>;
@@ -128,7 +135,9 @@ export default function EventsPage() {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
-        <p className="text-gray-600">Only organizers can access the events management dashboard.</p>
+        <p className="text-gray-600">
+          Only organizers can access the events management dashboard.
+        </p>
       </div>
     );
   }
@@ -162,7 +171,7 @@ export default function EventsPage() {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
@@ -170,7 +179,8 @@ export default function EventsPage() {
               <div>
                 <p className="text-sm text-gray-600">Published</p>
                 <p className="text-2xl font-bold">
-                  {events?.filter((e: Event) => e.status === "published").length || 0}
+                  {events?.filter((e: Event) => e.status === "published")
+                    .length || 0}
                 </p>
               </div>
             </div>
@@ -184,7 +194,8 @@ export default function EventsPage() {
               <div>
                 <p className="text-sm text-gray-600">Drafts</p>
                 <p className="text-2xl font-bold">
-                  {events?.filter((e: Event) => e.status === "draft").length || 0}
+                  {events?.filter((e: Event) => e.status === "draft").length ||
+                    0}
                 </p>
               </div>
             </div>
@@ -198,7 +209,10 @@ export default function EventsPage() {
               <div>
                 <p className="text-sm text-gray-600">Total Registrations</p>
                 <p className="text-2xl font-bold">
-                  {events?.reduce((sum: number, e: Event) => sum + e.registrationCount, 0) || 0}
+                  {events?.reduce(
+                    (sum: number, e: Event) => sum + e.registrationCount,
+                    0
+                  ) || 0}
                 </p>
               </div>
             </div>
@@ -233,9 +247,13 @@ export default function EventsPage() {
             <Card>
               <CardContent className="p-12 text-center">
                 <CalendarIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No events found</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No events found
+                </h3>
                 <p className="text-gray-600 mb-4">
-                  {searchTerm ? "No events match your search criteria." : "You haven't created any events yet."}
+                  {searchTerm
+                    ? "No events match your search criteria."
+                    : "You haven't created any events yet."}
                 </p>
                 {!searchTerm && (
                   <Link href="/dashboard/events/create">
@@ -247,7 +265,10 @@ export default function EventsPage() {
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredEvents.map((event: Event) => (
-                <Card key={event._id} className="hover:shadow-lg transition-shadow">
+                <Card
+                  key={event._id}
+                  className="hover:shadow-lg transition-shadow"
+                >
                   <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -255,9 +276,11 @@ export default function EventsPage() {
                           {getStatusBadge(event.status, event.startDate)}
                           <Badge variant="outline">{event.type}</Badge>
                         </div>
-                        <CardTitle className="text-lg line-clamp-2">{event.title}</CardTitle>
+                        <CardTitle className="text-lg line-clamp-2">
+                          {event.title}
+                        </CardTitle>
                       </div>
-                      
+
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="sm">
@@ -272,19 +295,27 @@ export default function EventsPage() {
                             View Event
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => router.push(`/dashboard/events/${event._id}/edit`)}
+                            onClick={() =>
+                              router.push(`/dashboard/events/${event._id}/edit`)
+                            }
                           >
                             <PencilIcon className="h-4 w-4 mr-2" />
                             Edit Event
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => router.push(`/dashboard/events/${event._id}/attendees`)}
+                            onClick={() =>
+                              router.push(
+                                `/dashboard/events/${event._id}/attendees`
+                              )
+                            }
                           >
                             <UsersIcon className="h-4 w-4 mr-2" />
                             View Attendees ({event.registrationCount})
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => handleToggleStatus(event._id, event.status)}
+                            onClick={() =>
+                              handleToggleStatus(event._id, event.status)
+                            }
                           >
                             {event.status === "published" ? (
                               <>
@@ -299,7 +330,11 @@ export default function EventsPage() {
                             )}
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(`${window.location.origin}/events/${event._id}`)}
+                            onClick={() =>
+                              navigator.clipboard.writeText(
+                                `${window.location.origin}/events/${event._id}`
+                              )
+                            }
                           >
                             <CopyIcon className="h-4 w-4 mr-2" />
                             Copy Link
@@ -315,25 +350,25 @@ export default function EventsPage() {
                       </DropdownMenu>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="pt-0">
                     <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                       {event.description}
                     </p>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex items-center text-gray-600">
                         <CalendarIcon className="h-4 w-4 mr-2" />
                         {formatDate(event.startDate)}
                       </div>
-                      
+
                       {event.type !== "online" && event.location && (
                         <div className="flex items-center text-gray-600">
                           <MapPinIcon className="h-4 w-4 mr-2" />
                           {event.location}
                         </div>
                       )}
-                      
+
                       <div className="flex items-center text-gray-600">
                         <UsersIcon className="h-4 w-4 mr-2" />
                         {event.registrationCount} registered
@@ -356,7 +391,9 @@ export default function EventsPage() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => router.push(`/dashboard/events/${event._id}/edit`)}
+                            onClick={() =>
+                              router.push(`/dashboard/events/${event._id}/edit`)
+                            }
                           >
                             <PencilIcon className="h-4 w-4 mr-1" />
                             Edit

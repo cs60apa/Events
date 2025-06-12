@@ -26,9 +26,9 @@ export const createNotification = mutation({
 });
 
 export const getUserNotifications = query({
-  args: { 
+  args: {
     userId: v.id("users"),
-    limit: v.optional(v.number())
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     let query = ctx.db
@@ -37,15 +37,16 @@ export const getUserNotifications = query({
       .order("desc");
 
     const notifications = await query.collect();
-    
+
     // Sort by created date (most recent first)
-    const sortedNotifications = notifications.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const sortedNotifications = notifications.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
     // Limit results if specified
-    const limitedNotifications = args.limit 
-      ? sortedNotifications.slice(0, args.limit) 
+    const limitedNotifications = args.limit
+      ? sortedNotifications.slice(0, args.limit)
       : sortedNotifications;
 
     // Get related event details if available
@@ -68,7 +69,7 @@ export const getUnreadNotificationCount = query({
   handler: async (ctx, args) => {
     const notifications = await ctx.db
       .query("notifications")
-      .withIndex("by_read_status", (q) => 
+      .withIndex("by_read_status", (q) =>
         q.eq("userId", args.userId).eq("isRead", false)
       )
       .collect();
@@ -89,13 +90,13 @@ export const markAllNotificationsAsRead = mutation({
   handler: async (ctx, args) => {
     const unreadNotifications = await ctx.db
       .query("notifications")
-      .withIndex("by_read_status", (q) => 
+      .withIndex("by_read_status", (q) =>
         q.eq("userId", args.userId).eq("isRead", false)
       )
       .collect();
 
     await Promise.all(
-      unreadNotifications.map(notification => 
+      unreadNotifications.map((notification) =>
         ctx.db.patch(notification._id, { isRead: true })
       )
     );
@@ -132,7 +133,7 @@ export const notifyEventAttendees = mutation({
       .collect();
 
     // Create notifications for each attendee
-    const notificationPromises = registrations.map(registration =>
+    const notificationPromises = registrations.map((registration) =>
       ctx.db.insert("notifications", {
         userId: registration.userId,
         title: args.title,

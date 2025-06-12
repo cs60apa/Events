@@ -2,11 +2,23 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -55,23 +67,23 @@ export default function CreateEventPage() {
     "Gaming",
     "IoT",
     "Cloud Computing",
-    "Other"
+    "Other",
   ];
 
   const addTag = () => {
     if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, newTag.trim()]
+        tags: [...prev.tags, newTag.trim()],
       }));
       setNewTag("");
     }
   };
 
   const removeTag = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
@@ -92,7 +104,9 @@ export default function CreateEventPage() {
         virtualLink: formData.virtualLink || undefined,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        maxAttendees: formData.maxAttendees ? parseInt(formData.maxAttendees) : undefined,
+        maxAttendees: formData.maxAttendees
+          ? parseInt(formData.maxAttendees)
+          : undefined,
         category: formData.category,
         tags: formData.tags,
         isPublic: formData.isPublic,
@@ -141,7 +155,9 @@ export default function CreateEventPage() {
                 id="title"
                 placeholder="React 19 Deep Dive Workshop"
                 value={formData.title}
-                onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, title: e.target.value }))
+                }
                 required
               />
             </div>
@@ -152,7 +168,12 @@ export default function CreateEventPage() {
                 id="description"
                 placeholder="Describe what attendees will learn and experience at your event..."
                 value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
                 rows={4}
                 required
               />
@@ -162,7 +183,9 @@ export default function CreateEventPage() {
               <Label htmlFor="category">Category *</Label>
               <Select
                 value={formData.category}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, category: value }))
+                }
                 required
               >
                 <SelectTrigger>
@@ -185,7 +208,9 @@ export default function CreateEventPage() {
                   placeholder="Add a tag (e.g., React, JavaScript)"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && (e.preventDefault(), addTag())
+                  }
                 />
                 <Button type="button" variant="outline" onClick={addTag}>
                   <Plus className="h-4 w-4" />
@@ -194,7 +219,11 @@ export default function CreateEventPage() {
               {formData.tags.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {formData.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                    <Badge
+                      key={tag}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
                       {tag}
                       <button
                         type="button"
@@ -215,16 +244,19 @@ export default function CreateEventPage() {
         <Card>
           <CardHeader>
             <CardTitle>Event Format</CardTitle>
-            <CardDescription>
-              How will your event be conducted?
-            </CardDescription>
+            <CardDescription>How will your event be conducted?</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="space-y-3">
               <Label>Event Type *</Label>
               <RadioGroup
                 value={formData.type}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, type: value as "online" | "in-person" | "hybrid" }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    type: value as "online" | "in-person" | "hybrid",
+                  }))
+                }
                 className="grid grid-cols-1 gap-4 sm:grid-cols-3"
               >
                 <div className="flex items-center space-x-2 p-4 border rounded-lg">
@@ -267,8 +299,15 @@ export default function CreateEventPage() {
                   id="location"
                   placeholder="123 Tech Street, San Francisco, CA"
                   value={formData.location}
-                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                  required={formData.type === "in-person" || formData.type === "hybrid"}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      location: e.target.value,
+                    }))
+                  }
+                  required={
+                    formData.type === "in-person" || formData.type === "hybrid"
+                  }
                 />
               </div>
             )}
@@ -280,7 +319,12 @@ export default function CreateEventPage() {
                   id="virtualLink"
                   placeholder="https://zoom.us/j/123456789"
                   value={formData.virtualLink}
-                  onChange={(e) => setFormData(prev => ({ ...prev, virtualLink: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      virtualLink: e.target.value,
+                    }))
+                  }
                 />
               </div>
             )}
@@ -291,9 +335,7 @@ export default function CreateEventPage() {
         <Card>
           <CardHeader>
             <CardTitle>Schedule</CardTitle>
-            <CardDescription>
-              When will your event take place?
-            </CardDescription>
+            <CardDescription>When will your event take place?</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -303,7 +345,12 @@ export default function CreateEventPage() {
                   id="startDate"
                   type="datetime-local"
                   value={formData.startDate}
-                  onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      startDate: e.target.value,
+                    }))
+                  }
                   required
                 />
               </div>
@@ -313,19 +360,31 @@ export default function CreateEventPage() {
                   id="endDate"
                   type="datetime-local"
                   value={formData.endDate}
-                  onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      endDate: e.target.value,
+                    }))
+                  }
                   required
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="registrationDeadline">Registration Deadline</Label>
+              <Label htmlFor="registrationDeadline">
+                Registration Deadline
+              </Label>
               <Input
                 id="registrationDeadline"
                 type="datetime-local"
                 value={formData.registrationDeadline}
-                onChange={(e) => setFormData(prev => ({ ...prev, registrationDeadline: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    registrationDeadline: e.target.value,
+                  }))
+                }
               />
             </div>
           </CardContent>
@@ -347,7 +406,12 @@ export default function CreateEventPage() {
                 type="number"
                 placeholder="50"
                 value={formData.maxAttendees}
-                onChange={(e) => setFormData(prev => ({ ...prev, maxAttendees: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    maxAttendees: e.target.value,
+                  }))
+                }
               />
             </div>
 
@@ -360,14 +424,18 @@ export default function CreateEventPage() {
                   step="0.01"
                   placeholder="0.00"
                   value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, price: e.target.value }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="currency">Currency</Label>
                 <Select
                   value={formData.currency}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, currency: value }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, currency: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -388,7 +456,12 @@ export default function CreateEventPage() {
                 id="requirements"
                 placeholder="What should attendees bring or know beforehand?"
                 value={formData.requirements}
-                onChange={(e) => setFormData(prev => ({ ...prev, requirements: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    requirements: e.target.value,
+                  }))
+                }
                 rows={3}
               />
             </div>
@@ -397,7 +470,9 @@ export default function CreateEventPage() {
               <Switch
                 id="isPublic"
                 checked={formData.isPublic}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isPublic: checked }))}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isPublic: checked }))
+                }
               />
               <Label htmlFor="isPublic">Make this event public</Label>
             </div>
@@ -406,11 +481,7 @@ export default function CreateEventPage() {
 
         {/* Submit Buttons */}
         <div className="flex justify-end space-x-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancel
           </Button>
           <Button

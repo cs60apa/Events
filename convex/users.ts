@@ -75,7 +75,7 @@ export const updateUser = mutation({
   },
   handler: async (ctx, args) => {
     const { userId, ...updates } = args;
-    
+
     // Remove undefined values
     const cleanUpdates = Object.fromEntries(
       Object.entries(updates).filter(([_, v]) => v !== undefined)
@@ -115,8 +115,12 @@ export const getUserStats = query({
         .withIndex("by_user", (q) => q.eq("userId", args.userId))
         .collect();
 
-      const eventsAttended = registrations.filter(r => r.status === "attended").length;
-      const eventsRegistered = registrations.filter(r => r.status === "registered").length;
+      const eventsAttended = registrations.filter(
+        (r) => r.status === "attended"
+      ).length;
+      const eventsRegistered = registrations.filter(
+        (r) => r.status === "registered"
+      ).length;
 
       return {
         eventsAttended,

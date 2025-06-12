@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -57,7 +63,7 @@ export default function SignUpPage() {
 
       setUser(user);
       localStorage.setItem("currentUser", JSON.stringify(user));
-      
+
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -104,7 +110,9 @@ export default function SignUpPage() {
                     type="text"
                     placeholder="John Doe"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="pl-10"
                     required
                   />
@@ -121,7 +129,9 @@ export default function SignUpPage() {
                     type="email"
                     placeholder="john@example.com"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className="pl-10"
                     required
                   />
@@ -133,21 +143,33 @@ export default function SignUpPage() {
                 <Label>I want to:</Label>
                 <RadioGroup
                   value={formData.role}
-                  onValueChange={(value) => setFormData({ ...formData, role: value as "organizer" | "attendee" })}
+                  onValueChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      role: value as "organizer" | "attendee",
+                    })
+                  }
                   className="grid grid-cols-1 gap-4"
                 >
                   <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
                     <RadioGroupItem value="attendee" id="attendee" />
                     <Label htmlFor="attendee" className="flex-1 cursor-pointer">
                       <div className="font-medium">Attend Events</div>
-                      <div className="text-sm text-gray-500">Join meetups and network with professionals</div>
+                      <div className="text-sm text-gray-500">
+                        Join meetups and network with professionals
+                      </div>
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50 cursor-pointer">
                     <RadioGroupItem value="organizer" id="organizer" />
-                    <Label htmlFor="organizer" className="flex-1 cursor-pointer">
+                    <Label
+                      htmlFor="organizer"
+                      className="flex-1 cursor-pointer"
+                    >
                       <div className="font-medium">Host Events</div>
-                      <div className="text-sm text-gray-500">Organize and manage tech meetups</div>
+                      <div className="text-sm text-gray-500">
+                        Organize and manage tech meetups
+                      </div>
                     </Label>
                   </div>
                 </RadioGroup>
@@ -164,7 +186,9 @@ export default function SignUpPage() {
                       type="text"
                       placeholder="Your Company"
                       value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, company: e.target.value })
+                      }
                       className="pl-10"
                     />
                   </div>
@@ -179,7 +203,9 @@ export default function SignUpPage() {
                       type="text"
                       placeholder="City, Country"
                       value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, location: e.target.value })
+                      }
                       className="pl-10"
                     />
                   </div>
@@ -191,7 +217,9 @@ export default function SignUpPage() {
                     id="bio"
                     placeholder="Tell us about yourself..."
                     value={formData.bio}
-                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bio: e.target.value })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     rows={3}
                   />
@@ -209,7 +237,10 @@ export default function SignUpPage() {
 
             <div className="mt-6 text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <Link href="/auth/signin" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link
+                href="/auth/signin"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
                 Sign in
               </Link>
             </div>

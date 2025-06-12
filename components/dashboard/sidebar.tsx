@@ -1,7 +1,16 @@
 "use client";
 
 import { useAuth } from "@/providers/auth-provider";
-import { CalendarDays, Plus, BarChart3, Settings, Calendar, User, Bookmark, Bell } from "lucide-react";
+import {
+  CalendarDays,
+  Plus,
+  BarChart3,
+  Settings,
+  Calendar,
+  User,
+  Bookmark,
+  Bell,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -30,7 +39,8 @@ export function DashboardSidebar() {
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
-  const navigation = user?.role === "organizer" ? organizerNavigation : attendeeNavigation;
+  const navigation =
+    user?.role === "organizer" ? organizerNavigation : attendeeNavigation;
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
@@ -60,7 +70,9 @@ export function DashboardSidebar() {
                     >
                       <item.icon
                         className={cn(
-                          pathname === item.href ? "text-blue-700" : "text-gray-400 group-hover:text-blue-700",
+                          pathname === item.href
+                            ? "text-blue-700"
+                            : "text-gray-400 group-hover:text-blue-700",
                           "h-6 w-6 shrink-0"
                         )}
                         aria-hidden="true"

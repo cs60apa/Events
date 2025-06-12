@@ -24,13 +24,22 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/events" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link
+              href="/events"
+              className="text-gray-700 hover:text-gray-900 font-medium"
+            >
               Events
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-gray-900 font-medium"
+            >
               About
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-gray-900 font-medium">
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-gray-900 font-medium"
+            >
               Contact
             </Link>
           </nav>
@@ -64,7 +73,11 @@ export function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
 
@@ -72,44 +85,64 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <nav className="flex flex-col space-y-4">
-              <Link 
-                href="/events" 
+              <Link
+                href="/events"
                 className="text-gray-700 hover:text-gray-900 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Events
               </Link>
-              <Link 
-                href="/about" 
+              <Link
+                href="/about"
                 className="text-gray-700 hover:text-gray-900 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </Link>
-              <Link 
-                href="/contact" 
+              <Link
+                href="/contact"
                 className="text-gray-700 hover:text-gray-900 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
               </Link>
-              
+
               <div className="pt-4 border-t border-gray-200">
                 {user ? (
                   <>
-                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full mb-2">Dashboard</Button>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Button variant="ghost" className="w-full mb-2">
+                        Dashboard
+                      </Button>
                     </Link>
-                    <Button variant="outline" onClick={() => { signOut(); setIsMenuOpen(false); }} className="w-full">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        signOut();
+                        setIsMenuOpen(false);
+                      }}
+                      className="w-full"
+                    >
                       Sign Out
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Link href="/auth/signin" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="ghost" className="w-full mb-2">Sign In</Button>
+                    <Link
+                      href="/auth/signin"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Button variant="ghost" className="w-full mb-2">
+                        Sign In
+                      </Button>
                     </Link>
-                    <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
+                    <Link
+                      href="/auth/signup"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       <Button className="w-full">Sign Up</Button>
                     </Link>
                   </>

@@ -48,7 +48,10 @@ export function DashboardHeader() {
             </span>
           </Button>
 
-          <div className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true" />
+          <div
+            className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200"
+            aria-hidden="true"
+          />
 
           <div className="flex items-center gap-x-4">
             <div className="hidden lg:flex lg:flex-col lg:text-sm lg:leading-6">

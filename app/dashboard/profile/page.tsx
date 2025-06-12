@@ -9,9 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { 
-  MailIcon, 
-  MapPinIcon, 
+import {
+  MailIcon,
+  MapPinIcon,
   BuildingIcon,
   LinkedinIcon,
   TwitterIcon,
@@ -19,7 +19,7 @@ import {
   GlobeIcon,
   SaveIcon,
   PlusIcon,
-  XIcon
+  XIcon,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -60,26 +60,26 @@ export default function ProfilePage() {
   }, [user]);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleAddSkill = () => {
     if (newSkill.trim() && !formData.skills.includes(newSkill.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        skills: [...prev.skills, newSkill.trim()]
+        skills: [...prev.skills, newSkill.trim()],
       }));
       setNewSkill("");
     }
   };
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove)
+      skills: prev.skills.filter((skill) => skill !== skillToRemove),
     }));
   };
 
@@ -93,7 +93,7 @@ export default function ProfilePage() {
       // For now, just update the local auth context
       // In a real app, you'd call the Convex mutation
       setUser({ ...user, ...formData });
-      
+
       alert("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile:", error);
@@ -117,7 +117,9 @@ export default function ProfilePage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>
-        <p className="text-gray-600 mt-1">Manage your personal information and preferences</p>
+        <p className="text-gray-600 mt-1">
+          Manage your personal information and preferences
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -133,25 +135,30 @@ export default function ProfilePage() {
                   {user.name?.charAt(0).toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
-              
-              <h3 className="text-xl font-semibold mb-2">{user.name || "User"}</h3>
-              <Badge variant={user.role === "organizer" ? "default" : "secondary"} className="mb-4">
+
+              <h3 className="text-xl font-semibold mb-2">
+                {user.name || "User"}
+              </h3>
+              <Badge
+                variant={user.role === "organizer" ? "default" : "secondary"}
+                className="mb-4"
+              >
                 {user.role === "organizer" ? "Event Organizer" : "Attendee"}
               </Badge>
-              
+
               <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center justify-center">
                   <MailIcon className="h-4 w-4 mr-2" />
                   {user.email}
                 </div>
-                
+
                 {formData.location && (
                   <div className="flex items-center justify-center">
                     <MapPinIcon className="h-4 w-4 mr-2" />
                     {formData.location}
                   </div>
                 )}
-                
+
                 {formData.company && (
                   <div className="flex items-center justify-center">
                     <BuildingIcon className="h-4 w-4 mr-2" />
@@ -161,7 +168,9 @@ export default function ProfilePage() {
               </div>
 
               {formData.bio && (
-                <p className="text-sm text-gray-600 mt-4 text-left">{formData.bio}</p>
+                <p className="text-sm text-gray-600 mt-4 text-left">
+                  {formData.bio}
+                </p>
               )}
 
               {formData.skills.length > 0 && (
@@ -200,7 +209,9 @@ export default function ProfilePage() {
                     <Input
                       id="name"
                       value={formData.name}
-                      onChange={(e) => handleInputChange("name", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("name", e.target.value)
+                      }
                       placeholder="Enter your full name"
                       required
                     />
@@ -215,7 +226,9 @@ export default function ProfilePage() {
                       disabled
                       className="bg-gray-50"
                     />
-                    <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Email cannot be changed
+                    </p>
                   </div>
                 </div>
 
@@ -236,7 +249,9 @@ export default function ProfilePage() {
                     <Input
                       id="location"
                       value={formData.location}
-                      onChange={(e) => handleInputChange("location", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("location", e.target.value)
+                      }
                       placeholder="City, Country"
                     />
                   </div>
@@ -246,7 +261,9 @@ export default function ProfilePage() {
                     <Input
                       id="company"
                       value={formData.company}
-                      onChange={(e) => handleInputChange("company", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("company", e.target.value)
+                      }
                       placeholder="Your current company"
                     />
                   </div>
@@ -260,17 +277,24 @@ export default function ProfilePage() {
                       value={newSkill}
                       onChange={(e) => setNewSkill(e.target.value)}
                       placeholder="Add a skill..."
-                      onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddSkill())}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" &&
+                        (e.preventDefault(), handleAddSkill())
+                      }
                     />
                     <Button type="button" onClick={handleAddSkill} size="sm">
                       <PlusIcon className="h-4 w-4" />
                     </Button>
                   </div>
-                  
+
                   {formData.skills.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {formData.skills.map((skill) => (
-                        <Badge key={skill} variant="secondary" className="flex items-center gap-1">
+                        <Badge
+                          key={skill}
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
                           {skill}
                           <button
                             type="button"
@@ -288,7 +312,7 @@ export default function ProfilePage() {
                 {/* Social Links */}
                 <div className="space-y-4">
                   <h4 className="text-lg font-medium">Social Links</h4>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="linkedinUrl">LinkedIn Profile</Label>
@@ -297,7 +321,9 @@ export default function ProfilePage() {
                         <Input
                           id="linkedinUrl"
                           value={formData.linkedinUrl}
-                          onChange={(e) => handleInputChange("linkedinUrl", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("linkedinUrl", e.target.value)
+                          }
                           placeholder="https://linkedin.com/in/username"
                           className="pl-10"
                         />
@@ -311,7 +337,9 @@ export default function ProfilePage() {
                         <Input
                           id="twitterUrl"
                           value={formData.twitterUrl}
-                          onChange={(e) => handleInputChange("twitterUrl", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("twitterUrl", e.target.value)
+                          }
                           placeholder="https://twitter.com/username"
                           className="pl-10"
                         />
@@ -325,7 +353,9 @@ export default function ProfilePage() {
                         <Input
                           id="githubUrl"
                           value={formData.githubUrl}
-                          onChange={(e) => handleInputChange("githubUrl", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("githubUrl", e.target.value)
+                          }
                           placeholder="https://github.com/username"
                           className="pl-10"
                         />
@@ -339,7 +369,9 @@ export default function ProfilePage() {
                         <Input
                           id="website"
                           value={formData.website}
-                          onChange={(e) => handleInputChange("website", e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange("website", e.target.value)
+                          }
                           placeholder="https://yourwebsite.com"
                           className="pl-10"
                         />

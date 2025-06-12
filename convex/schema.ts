@@ -15,14 +15,17 @@ export default defineSchema({
     twitterUrl: v.optional(v.string()),
     githubUrl: v.optional(v.string()),
     website: v.optional(v.string()),
-  })
-    .index("by_email", ["email"]),
+  }).index("by_email", ["email"]),
 
   events: defineTable({
     title: v.string(),
     description: v.string(),
     organizer: v.id("users"),
-    type: v.union(v.literal("online"), v.literal("in-person"), v.literal("hybrid")),
+    type: v.union(
+      v.literal("online"),
+      v.literal("in-person"),
+      v.literal("hybrid")
+    ),
     location: v.optional(v.string()),
     virtualLink: v.optional(v.string()),
     startDate: v.string(),
@@ -31,18 +34,26 @@ export default defineSchema({
     category: v.string(),
     tags: v.array(v.string()),
     imageUrl: v.optional(v.string()),
-    status: v.union(v.literal("draft"), v.literal("published"), v.literal("cancelled")),
+    status: v.union(
+      v.literal("draft"),
+      v.literal("published"),
+      v.literal("cancelled")
+    ),
     isPublic: v.boolean(),
     registrationDeadline: v.optional(v.string()),
     price: v.optional(v.number()),
     currency: v.optional(v.string()),
     requirements: v.optional(v.string()),
-    agenda: v.optional(v.array(v.object({
-      time: v.string(),
-      topic: v.string(),
-      speaker: v.optional(v.string()),
-      duration: v.optional(v.number()),
-    }))),
+    agenda: v.optional(
+      v.array(
+        v.object({
+          time: v.string(),
+          topic: v.string(),
+          speaker: v.optional(v.string()),
+          duration: v.optional(v.number()),
+        })
+      )
+    ),
   })
     .index("by_organizer", ["organizer"])
     .index("by_status", ["status"])
@@ -60,20 +71,25 @@ export default defineSchema({
     twitterUrl: v.optional(v.string()),
     topic: v.string(),
     talkDescription: v.optional(v.string()),
-  })
-    .index("by_event", ["eventId"]),
+  }).index("by_event", ["eventId"]),
 
   registrations: defineTable({
     eventId: v.id("events"),
     userId: v.id("users"),
-    status: v.union(v.literal("registered"), v.literal("attended"), v.literal("cancelled")),
+    status: v.union(
+      v.literal("registered"),
+      v.literal("attended"),
+      v.literal("cancelled")
+    ),
     registeredAt: v.string(),
     checkedInAt: v.optional(v.string()),
-    feedback: v.optional(v.object({
-      rating: v.number(),
-      comment: v.string(),
-      wouldRecommend: v.boolean(),
-    })),
+    feedback: v.optional(
+      v.object({
+        rating: v.number(),
+        comment: v.string(),
+        wouldRecommend: v.boolean(),
+      })
+    ),
   })
     .index("by_event", ["eventId"])
     .index("by_user", ["userId"])
