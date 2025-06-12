@@ -98,4 +98,23 @@ export default defineSchema({
   })
     .index("by_event", ["eventId"])
     .index("by_type", ["type"]),
+
+  notifications: defineTable({
+    userId: v.id("users"),
+    title: v.string(),
+    message: v.string(),
+    type: v.union(
+      v.literal("event_update"),
+      v.literal("event_reminder"),
+      v.literal("event_cancelled"),
+      v.literal("registration_confirmed"),
+      v.literal("new_opportunity")
+    ),
+    relatedEventId: v.optional(v.id("events")),
+    isRead: v.boolean(),
+    createdAt: v.string(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_read_status", ["userId", "isRead"])
+    .index("by_created_at", ["createdAt"]),
 });

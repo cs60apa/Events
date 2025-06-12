@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/providers/auth-provider";
-import { CalendarDays, Plus, Users, BarChart3, Settings, Calendar, User, Bookmark } from "lucide-react";
+import { CalendarDays, Plus, Users, BarChart3, Settings, Calendar, User, Bookmark, Bell } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,8 @@ export function DashboardSidebar() {
     { name: "Overview", href: "/dashboard", icon: BarChart3 },
     { name: "My Events", href: "/dashboard/events", icon: Calendar },
     { name: "Create Event", href: "/dashboard/events/create", icon: Plus },
-    { name: "Attendees", href: "/dashboard/attendees", icon: Users },
+    { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
     { name: "Profile", href: "/dashboard/profile", icon: User },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
@@ -23,6 +24,7 @@ export function DashboardSidebar() {
     { name: "Overview", href: "/dashboard", icon: BarChart3 },
     { name: "My Events", href: "/dashboard/events", icon: Calendar },
     { name: "Browse Events", href: "/events", icon: CalendarDays },
+    { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
     { name: "Bookmarks", href: "/dashboard/bookmarks", icon: Bookmark },
     { name: "Profile", href: "/dashboard/profile", icon: User },
     { name: "Settings", href: "/dashboard/settings", icon: Settings },
