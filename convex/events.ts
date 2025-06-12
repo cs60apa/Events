@@ -302,3 +302,87 @@ export const getUpcomingEvents = query({
     return eventsWithOrganizers;
   },
 });
+
+export const getEventRegistrations = query({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, args) => {
+    const registrations = await ctx.db
+      .query("registrations")
+      .withIndex("by_event", (q) => q.eq("eventId", args.eventId))
+      .collect();
+
+    // Get user details for each registration
+    const registrationsWithUsers = await Promise.all(
+      registrations.map(async (registration) => {
+        const user = await ctx.db.get(registration.userId);
+        return {
+          ...registration,
+          user,
+        };
+      })
+    );
+
+    // Sort by registration date (most recent first)
+    return registrationsWithUsers.sort((a, b) => 
+      new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime()
+    );
+  },
+});
+
+export const updateRegistrationStatus = mutation({
+  args: {
+    registrationId: v.id("registrations"),
+    status: v.union(v.literal("registered"), v.literal("attended"), v.literal("cancelled")),
+  },
+  handler: async (ctx, args) => {
+    const updates: any = { status: args.status };
+    
+    if (args.status === "attended") {
+      updates.checkedInAt = new Date().toISOString();
+    }
+
+    return await ctx.db.patch(args.registrationId, updates);
+  },
+});
+
+export const getEventAnalytics = query({
+  args: { organizerId: v.id("users") },
+  handler: async (ctx, args) => {
+    // Get all events by organizer
+    const events = await ctx.db
+      .query("events")
+      .withIndex("by_organizer", (q) => q.eq("organizer", args.organizerId))
+      .collect();
+
+    // Get analytics data for each event
+    const eventsWithAnalytics = await Promise.all(
+      events.map(async (event) => {
+        const registrations = await ctx.db
+          .query("registrations")
+          .withIndex("by_event", (q) => q.eq("eventId", event._id))
+          .collect();
+
+        const attendees = registrations.filter(r => r.status === "attended");
+        const registrationCount = registrations.length;
+        const attendeeCount = attendees.length;
+
+        return {
+          _id: event._id,
+          title: event.title,
+          startDate: event.startDate,
+          category: event.category,
+          type: event.type,
+          price: event.price,
+          registrationCount,
+          attendeeCount,
+          attendanceRate: registrationCount > 0 ? (attendeeCount / registrationCount) * 100 : 0,
+          revenue: event.price ? event.price * registrationCount : 0,
+        };
+      })
+    );
+
+    return eventsWithAnalytics.sort((a, b) => 
+      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    );
+  },
+});

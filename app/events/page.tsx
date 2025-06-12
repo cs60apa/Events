@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -16,63 +18,11 @@ export default function EventsPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedType, setSelectedType] = useState("");
 
-  // Mock data for now
-  const events = [
-    {
-      _id: "1",
-      title: "React 19 Deep Dive Workshop",
-      description: "Learn the latest features in React 19 with hands-on coding exercises and real-world examples.",
-      startDate: "2025-06-15T14:00:00Z",
-      endDate: "2025-06-15T17:00:00Z",
-      type: "in-person" as const,
-      location: "Tech Hub, San Francisco",
-      category: "Web Development",
-      tags: ["React", "JavaScript", "Frontend"],
-      registrationCount: 45,
-      maxAttendees: 60,
-      price: 25,
-      organizer: {
-        name: "Sarah Johnson",
-        company: "React Labs"
-      }
-    },
-    {
-      _id: "2",
-      title: "AI & Machine Learning Bootcamp",
-      description: "Comprehensive introduction to AI and ML concepts with Python implementations.",
-      startDate: "2025-06-20T10:00:00Z",
-      endDate: "2025-06-20T16:00:00Z",
-      type: "hybrid" as const,
-      location: "Innovation Center, Austin",
-      virtualLink: "https://zoom.us/j/123456789",
-      category: "AI/Machine Learning",
-      tags: ["Python", "AI", "Machine Learning", "Data Science"],
-      registrationCount: 78,
-      maxAttendees: 100,
-      price: 50,
-      organizer: {
-        name: "Dr. Michael Chen",
-        company: "AI Institute"
-      }
-    },
-    {
-      _id: "3",
-      title: "Next.js Performance Optimization",
-      description: "Advanced techniques for building lightning-fast Next.js applications.",
-      startDate: "2025-06-25T13:00:00Z",
-      endDate: "2025-06-25T16:00:00Z",
-      type: "online" as const,
-      category: "Web Development",
-      tags: ["Next.js", "React", "Performance"],
-      registrationCount: 120,
-      maxAttendees: 200,
-      price: 0,
-      organizer: {
-        name: "Alex Rodriguez",
-        company: "Vercel"
-      }
-    }
-  ];
+  // Get public events from Convex
+  const allEvents = useQuery(api.events.getPublicEvents, {
+    category: selectedCategory || undefined,
+    type: selectedType as "online" | "in-person" | "hybrid" | undefined,
+  });
 
   const categories = [
     "Web Development",
@@ -119,16 +69,32 @@ export default function EventsPage() {
     }
   };
 
-  const filteredEvents = events.filter(event => {
+  // Filter events based on search term (since we already filter by category/type in the query)
+  const filteredEvents = (allEvents || []).filter((event: any) => {
+    if (!searchTerm) return true;
+    
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         event.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         event.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesCategory = !selectedCategory || event.category === selectedCategory;
-    const matchesType = !selectedType || event.type === selectedType;
-    
-    return matchesSearch && matchesCategory && matchesType;
+    return matchesSearch;
   });
+
+  // Show loading state
+  if (allEvents === undefined) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="pt-16">
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+            <p className="text-gray-600">Loading events...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -206,7 +172,7 @@ export default function EventsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filteredEvents.map((event) => (
+              {filteredEvents.map((event: any) => (
                 <Card key={event._id} className="overflow-hidden hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
@@ -261,7 +227,7 @@ export default function EventsPage() {
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1">
-                      {event.tags.slice(0, 3).map((tag) => (
+                      {event.tags.slice(0, 3).map((tag: string) => (
                         <Badge key={tag} variant="outline" className="text-xs">
                           {tag}
                         </Badge>

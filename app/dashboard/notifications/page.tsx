@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useAuth } from "@/providers/auth-provider";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,13 +17,15 @@ import {
   CheckIcon,
   XIcon,
   MailIcon,
-  Trash2Icon,
   CheckCheckIcon
 } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 
-interface Notification {
+// Remove custom interface since we'll use Convex generated types
+
+// Type for notification with optional related event
+type NotificationWithEvent = {
   _id: string;
   title: string;
   message: string;
@@ -33,88 +38,31 @@ interface Notification {
     title: string;
     startDate: string;
   };
-}
+};
 
 export default function NotificationsPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("all");
 
-  // Mock notifications data (in real app, would come from Convex)
-  const mockNotifications: Notification[] = [
-    {
-      _id: "1",
-      title: "Event Update",
-      message: "The React Meetup venue has been changed to Tech Hub Downtown.",
-      type: "event_update",
-      isRead: false,
-      createdAt: "2024-12-10T14:30:00Z",
-      relatedEventId: "event1",
-      relatedEvent: {
-        _id: "event1",
-        title: "React Meetup",
-        startDate: "2024-12-15T18:00:00Z"
-      }
-    },
-    {
-      _id: "2",
-      title: "Event Reminder",
-      message: "Don't forget! Your registered event 'JavaScript Workshop' starts tomorrow at 2:00 PM.",
-      type: "event_reminder",
-      isRead: false,
-      createdAt: "2024-12-09T10:00:00Z",
-      relatedEventId: "event2",
-      relatedEvent: {
-        _id: "event2",
-        title: "JavaScript Workshop",
-        startDate: "2024-12-10T14:00:00Z"
-      }
-    },
-    {
-      _id: "3",
-      title: "Registration Confirmed",
-      message: "You have successfully registered for 'Python Data Science Bootcamp'.",
-      type: "registration_confirmed",
-      isRead: true,
-      createdAt: "2024-12-08T16:45:00Z",
-      relatedEventId: "event3",
-      relatedEvent: {
-        _id: "event3",
-        title: "Python Data Science Bootcamp",
-        startDate: "2024-12-20T09:00:00Z"
-      }
-    },
-    {
-      _id: "4",
-      title: "New Opportunity",
-      message: "A new job opportunity has been posted for the Tech Career Fair event.",
-      type: "new_opportunity",
-      isRead: true,
-      createdAt: "2024-12-07T12:20:00Z",
-      relatedEventId: "event4",
-      relatedEvent: {
-        _id: "event4",
-        title: "Tech Career Fair",
-        startDate: "2024-12-25T10:00:00Z"
-      }
-    },
-    {
-      _id: "5",
-      title: "Event Cancelled",
-      message: "Unfortunately, the 'Mobile Dev Meetup' has been cancelled due to unforeseen circumstances.",
-      type: "event_cancelled",
-      isRead: false,
-      createdAt: "2024-12-06T09:15:00Z",
-      relatedEventId: "event5",
-      relatedEvent: {
-        _id: "event5",
-        title: "Mobile Dev Meetup",
-        startDate: "2024-12-12T19:00:00Z"
-      }
-    }
-  ];
+  // Get user notifications from Convex
+  const notifications = useQuery(
+    api.notifications.getUserNotifications, 
+    user ? { userId: user._id as Id<"users"> } : "skip"
+  ) as NotificationWithEvent[] | undefined;
+  
+  // Get unread count
+  const unreadCount = useQuery(
+    api.notifications.getUnreadNotificationCount,
+    user ? { userId: user._id as Id<"users"> } : "skip"
+  );
+
+  // Mutations for notification actions
+  const markAsRead = useMutation(api.notifications.markNotificationAsRead);
+  const markAllAsRead = useMutation(api.notifications.markAllNotificationsAsRead);
+  const deleteNotification = useMutation(api.notifications.deleteNotification);
 
   // Filter notifications based on tab
-  const filteredNotifications = mockNotifications.filter((notification) => {
+  const filteredNotifications = (notifications || []).filter((notification) => {
     switch (activeTab) {
       case "unread":
         return !notification.isRead;
@@ -127,7 +75,31 @@ export default function NotificationsPage() {
     }
   });
 
-  const unreadCount = mockNotifications.filter(n => !n.isRead).length;
+  // Handle notification actions
+  const handleMarkAsRead = async (notificationId: Id<"notifications">) => {
+    try {
+      await markAsRead({ notificationId });
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
+  };
+
+  const handleMarkAllAsRead = async () => {
+    if (!user) return;
+    try {
+      await markAllAsRead({ userId: user._id as Id<"users"> });
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId: Id<"notifications">) => {
+    try {
+      await deleteNotification({ notificationId });
+    } catch (error) {
+      console.error("Failed to delete notification:", error);
+    }
+  };
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -172,6 +144,15 @@ export default function NotificationsPage() {
     );
   }
 
+  if (notifications === undefined) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+        <p className="text-gray-600">Loading your notifications...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -182,13 +163,14 @@ export default function NotificationsPage() {
         </div>
         
         <div className="flex space-x-2">
-          <Button variant="outline" size="sm">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={handleMarkAllAsRead}
+            disabled={!unreadCount || unreadCount === 0}
+          >
             <CheckCheckIcon className="h-4 w-4 mr-2" />
             Mark All Read
-          </Button>
-          <Button variant="outline" size="sm">
-            <Trash2Icon className="h-4 w-4 mr-2" />
-            Clear All
           </Button>
         </div>
       </div>
@@ -201,7 +183,7 @@ export default function NotificationsPage() {
               <BellIcon className="h-5 w-5 text-blue-500" />
               <div>
                 <p className="text-sm text-gray-600">Total</p>
-                <p className="text-2xl font-bold">{mockNotifications.length}</p>
+                <p className="text-2xl font-bold">{notifications?.length || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -213,7 +195,7 @@ export default function NotificationsPage() {
               <MailIcon className="h-5 w-5 text-red-500" />
               <div>
                 <p className="text-sm text-gray-600">Unread</p>
-                <p className="text-2xl font-bold">{unreadCount}</p>
+                <p className="text-2xl font-bold">{unreadCount || 0}</p>
               </div>
             </div>
           </CardContent>
@@ -226,7 +208,7 @@ export default function NotificationsPage() {
               <div>
                 <p className="text-sm text-gray-600">Events</p>
                 <p className="text-2xl font-bold">
-                  {mockNotifications.filter(n => ["event_update", "event_reminder", "event_cancelled"].includes(n.type)).length}
+                  {notifications?.filter(n => ["event_update", "event_reminder", "event_cancelled"].includes(n.type)).length || 0}
                 </p>
               </div>
             </div>
@@ -240,7 +222,7 @@ export default function NotificationsPage() {
               <div>
                 <p className="text-sm text-gray-600">Registrations</p>
                 <p className="text-2xl font-bold">
-                  {mockNotifications.filter(n => n.type === "registration_confirmed").length}
+                  {notifications?.filter(n => n.type === "registration_confirmed").length || 0}
                 </p>
               </div>
             </div>
@@ -251,8 +233,8 @@ export default function NotificationsPage() {
       {/* Notifications Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="all">All ({mockNotifications.length})</TabsTrigger>
-          <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
+          <TabsTrigger value="all">All ({notifications?.length || 0})</TabsTrigger>
+          <TabsTrigger value="unread">Unread ({unreadCount || 0})</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
           <TabsTrigger value="registrations">Registrations</TabsTrigger>
         </TabsList>
@@ -322,7 +304,12 @@ export default function NotificationsPage() {
                           </Link>
                         )}
                         
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleMarkAsRead(notification._id as Id<"notifications">)}
+                          disabled={notification.isRead}
+                        >
                           {notification.isRead ? (
                             <MailIcon className="h-4 w-4" />
                           ) : (
@@ -330,7 +317,11 @@ export default function NotificationsPage() {
                           )}
                         </Button>
                         
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteNotification(notification._id as Id<"notifications">)}
+                        >
                           <XIcon className="h-4 w-4" />
                         </Button>
                       </div>

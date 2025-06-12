@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
@@ -33,22 +33,6 @@ import {
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
 
-interface Registration {
-  _id: string;
-  userId: string;
-  eventId: string;
-  status: "registered" | "attended" | "cancelled";
-  registeredAt: string;
-  user?: {
-    _id: string;
-    name: string;
-    email: string;
-    company?: string;
-    location?: string;
-    skills?: string[];
-  };
-}
-
 export default function EventAttendeesPage() {
   const params = useParams();
   const { user } = useAuth();
@@ -60,80 +44,22 @@ export default function EventAttendeesPage() {
   // Get event details
   const event = useQuery(api.events.getEventById, { eventId: eventId as Id<"events"> });
   
-  // Mock registrations data (in real app, would come from Convex)
-  const mockRegistrations: Registration[] = [
-    {
-      _id: "1",
-      userId: "user1",
-      eventId: eventId,
-      status: "registered",
-      registeredAt: "2024-12-01T10:00:00Z",
-      user: {
-        _id: "user1",
-        name: "Alice Johnson",
-        email: "alice@example.com",
-        company: "TechCorp",
-        location: "San Francisco, CA",
-        skills: ["React", "TypeScript", "Node.js"]
-      }
-    },
-    {
-      _id: "2",
-      userId: "user2",
-      eventId: eventId,
-      status: "attended",
-      registeredAt: "2024-12-02T14:30:00Z",
-      user: {
-        _id: "user2",
-        name: "Bob Smith",
-        email: "bob@example.com",
-        company: "StartupXYZ",
-        location: "New York, NY",
-        skills: ["Python", "Data Science", "Machine Learning"]
-      }
-    },
-    {
-      _id: "3",
-      userId: "user3",
-      eventId: eventId,
-      status: "registered",
-      registeredAt: "2024-12-03T09:15:00Z",
-      user: {
-        _id: "user3",
-        name: "Carol Davis",
-        email: "carol@example.com",
-        company: "Design Studio",
-        location: "Los Angeles, CA",
-        skills: ["UI/UX", "Figma", "Frontend"]
-      }
-    },
-    {
-      _id: "4",
-      userId: "user4",
-      eventId: eventId,
-      status: "cancelled",
-      registeredAt: "2024-12-04T16:45:00Z",
-      user: {
-        _id: "user4",
-        name: "David Wilson",
-        email: "david@example.com",
-        company: "Enterprise Inc",
-        location: "Austin, TX",
-        skills: ["Java", "Spring", "Microservices"]
-      }
-    }
-  ];
+  // Get registrations for this event
+  const registrations = useQuery(api.events.getEventRegistrations, { eventId: eventId as Id<"events"> });
+
+  // Mutation for updating registration status
+  const updateRegistrationStatus = useMutation(api.events.updateRegistrationStatus);
 
   // Filter registrations based on search and tab
-  const filteredRegistrations = mockRegistrations.filter((registration) => {
+  const filteredRegistrations = (registrations || []).filter((registration: any) => {
     const user = registration.user;
     if (!user) return false;
 
     const matchesSearch = 
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.skills?.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
+      user.skills?.some((skill: string) => skill.toLowerCase().includes(searchTerm.toLowerCase()));
     
     switch (activeTab) {
       case "registered":
@@ -146,6 +72,30 @@ export default function EventAttendeesPage() {
         return matchesSearch;
     }
   });
+
+  // Handle marking attendee as attended
+  const handleMarkAsAttended = async (registrationId: Id<"registrations">) => {
+    try {
+      await updateRegistrationStatus({ 
+        registrationId, 
+        status: "attended" 
+      });
+    } catch (error) {
+      console.error("Failed to mark as attended:", error);
+    }
+  };
+
+  // Handle cancelling registration
+  const handleCancelRegistration = async (registrationId: Id<"registrations">) => {
+    try {
+      await updateRegistrationStatus({ 
+        registrationId, 
+        status: "cancelled" 
+      });
+    } catch (error) {
+      console.error("Failed to cancel registration:", error);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -163,7 +113,7 @@ export default function EventAttendeesPage() {
   const exportAttendees = () => {
     const csvContent = [
       ["Name", "Email", "Company", "Location", "Status", "Registration Date"],
-      ...filteredRegistrations.map(reg => [
+      ...filteredRegistrations.map((reg: any) => [
         reg.user?.name || "",
         reg.user?.email || "",
         reg.user?.company || "",
@@ -191,7 +141,7 @@ export default function EventAttendeesPage() {
     );
   }
 
-  if (!event) {
+  if (!event || registrations === undefined) {
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
@@ -210,9 +160,9 @@ export default function EventAttendeesPage() {
     );
   }
 
-  const registeredCount = mockRegistrations.filter(r => r.status === "registered").length;
-  const attendedCount = mockRegistrations.filter(r => r.status === "attended").length;
-  const cancelledCount = mockRegistrations.filter(r => r.status === "cancelled").length;
+  const registeredCount = registrations.filter((r: any) => r.status === "registered").length;
+  const attendedCount = registrations.filter((r: any) => r.status === "attended").length;
+  const cancelledCount = registrations.filter((r: any) => r.status === "cancelled").length;
 
   return (
     <div className="space-y-6">
@@ -243,7 +193,7 @@ export default function EventAttendeesPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
               <UsersIcon className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-              <p className="text-2xl font-bold">{mockRegistrations.length}</p>
+              <p className="text-2xl font-bold">{registrations.length}</p>
               <p className="text-sm text-gray-600">Total Registrations</p>
             </div>
             <div className="text-center">
@@ -279,7 +229,7 @@ export default function EventAttendeesPage() {
       {/* Attendees Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
-          <TabsTrigger value="all">All ({mockRegistrations.length})</TabsTrigger>
+          <TabsTrigger value="all">All ({registrations.length})</TabsTrigger>
           <TabsTrigger value="registered">Registered ({registeredCount})</TabsTrigger>
           <TabsTrigger value="attended">Attended ({attendedCount})</TabsTrigger>
           <TabsTrigger value="cancelled">Cancelled ({cancelledCount})</TabsTrigger>
@@ -298,7 +248,7 @@ export default function EventAttendeesPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {filteredRegistrations.map((registration) => (
+              {filteredRegistrations.map((registration: any) => (
                 <Card key={registration._id} className="hover:shadow-md transition-shadow">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
@@ -332,7 +282,7 @@ export default function EventAttendeesPage() {
                           
                           {registration.user?.skills && registration.user.skills.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
-                              {registration.user.skills.slice(0, 4).map((skill) => (
+                              {registration.user.skills.slice(0, 4).map((skill: string) => (
                                 <Badge key={skill} variant="outline" className="text-xs">
                                   {skill}
                                 </Badge>
@@ -366,14 +316,19 @@ export default function EventAttendeesPage() {
                           </DropdownMenuItem>
                           
                           {registration.status === "registered" && (
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleMarkAsAttended(registration._id as Id<"registrations">)}
+                            >
                               <CheckIcon className="h-4 w-4 mr-2" />
                               Mark as Attended
                             </DropdownMenuItem>
                           )}
                           
                           {registration.status !== "cancelled" && (
-                            <DropdownMenuItem className="text-red-600">
+                            <DropdownMenuItem 
+                              className="text-red-600"
+                              onClick={() => handleCancelRegistration(registration._id as Id<"registrations">)}
+                            >
                               <XIcon className="h-4 w-4 mr-2" />
                               Cancel Registration
                             </DropdownMenuItem>

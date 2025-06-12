@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useAuth } from "@/providers/auth-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -20,103 +23,44 @@ import {
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
-interface EventAnalytics {
-  id: string;
-  title: string;
-  date: string;
-  registrations: number;
-  attendees: number;
-  rating: number;
-  category: string;
-  type: "online" | "in-person" | "hybrid";
-  revenue?: number;
-}
-
 export default function AnalyticsPage() {
   const { user } = useAuth();
   const [timeRange, setTimeRange] = useState("last-30-days");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Mock analytics data
-  const mockEvents: EventAnalytics[] = [
-    {
-      id: "1",
-      title: "React Advanced Workshop",
-      date: "2024-12-01",
-      registrations: 150,
-      attendees: 120,
-      rating: 4.8,
-      category: "web-development",
-      type: "hybrid",
-      revenue: 2400
-    },
-    {
-      id: "2",
-      title: "Python Data Science Bootcamp",
-      date: "2024-12-05",
-      registrations: 200,
-      attendees: 180,
-      rating: 4.6,
-      category: "data-science",
-      type: "online",
-      revenue: 3600
-    },
-    {
-      id: "3",
-      title: "JavaScript Fundamentals",
-      date: "2024-12-10",
-      registrations: 80,
-      attendees: 75,
-      rating: 4.9,
-      category: "web-development",
-      type: "in-person",
-      revenue: 0
-    },
-    {
-      id: "4",
-      title: "DevOps Best Practices",
-      date: "2024-12-15",
-      registrations: 120,
-      attendees: 100,
-      rating: 4.7,
-      category: "devops",
-      type: "online",
-      revenue: 1800
-    },
-    {
-      id: "5",
-      title: "UI/UX Design Thinking",
-      date: "2024-12-20",
-      registrations: 90,
-      attendees: 85,
-      rating: 4.5,
-      category: "design",
-      type: "hybrid",
-      revenue: 1350
-    }
-  ];
+  // Get analytics data from Convex
+  const analyticsData = useQuery(
+    api.events.getEventAnalytics,
+    user ? { organizerId: user._id as Id<"users"> } : "skip"
+  );
 
-  const filteredEvents = mockEvents.filter(event => 
+  // Filter events based on category
+  const filteredEvents = (analyticsData || []).filter((event: any) => 
     selectedCategory === "all" || event.category === selectedCategory
   );
 
-  const totalRegistrations = filteredEvents.reduce((sum, event) => sum + event.registrations, 0);
-  const totalAttendees = filteredEvents.reduce((sum, event) => sum + event.attendees, 0);
-  const totalRevenue = filteredEvents.reduce((sum, event) => sum + (event.revenue || 0), 0);
-  const averageRating = filteredEvents.reduce((sum, event) => sum + event.rating, 0) / filteredEvents.length;
-  const averageAttendanceRate = (totalAttendees / totalRegistrations) * 100;
+  const totalRegistrations = filteredEvents.reduce((sum: number, event: any) => sum + event.registrationCount, 0);
+  const totalRevenue = filteredEvents.reduce((sum: number, event: any) => sum + (event.revenue || 0), 0);
+  const averageAttendanceRate = filteredEvents.length > 0 
+    ? filteredEvents.reduce((sum: number, event: any) => sum + event.attendanceRate, 0) / filteredEvents.length 
+    : 0;
+
+  // Calculate average rating (assuming rating is part of event feedback)
+  const averageRating = filteredEvents.length > 0 
+    ? filteredEvents.reduce((sum: number, event: any) => sum + (event.averageRating || 0), 0) / filteredEvents.length 
+    : 0;
 
   const categoryStats = {
-    "web-development": filteredEvents.filter(e => e.category === "web-development").length,
-    "data-science": filteredEvents.filter(e => e.category === "data-science").length,
-    "devops": filteredEvents.filter(e => e.category === "devops").length,
-    "design": filteredEvents.filter(e => e.category === "design").length,
+    "web-development": filteredEvents.filter((e: any) => e.category === "Web Development").length,
+    "data-science": filteredEvents.filter((e: any) => e.category === "Data Science").length,
+    "devops": filteredEvents.filter((e: any) => e.category === "DevOps").length,
+    "design": filteredEvents.filter((e: any) => e.category === "Design").length,
   };
 
   const typeStats = {
-    "online": filteredEvents.filter(e => e.type === "online").length,
-    "in-person": filteredEvents.filter(e => e.type === "in-person").length,
-    "hybrid": filteredEvents.filter(e => e.type === "hybrid").length,
+    "online": filteredEvents.filter((e: any) => e.type === "online").length,
+    "in-person": filteredEvents.filter((e: any) => e.type === "in-person").length,
+    "hybrid": filteredEvents.filter((e: any) => e.type === "hybrid").length,
   };
 
   if (!user || user.role !== "organizer") {
@@ -124,6 +68,15 @@ export default function AnalyticsPage() {
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h2>
         <p className="text-gray-600">Only event organizers can access analytics.</p>
+      </div>
+    );
+  }
+
+  if (analyticsData === undefined) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+        <p className="text-gray-600">Loading your analytics data...</p>
       </div>
     );
   }
@@ -270,7 +223,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
-                {filteredEvents.filter(e => e.revenue && e.revenue > 0).length}
+                {filteredEvents.filter((e: any) => e.revenue && e.revenue > 0).length}
               </p>
               <p className="text-sm text-gray-600">Paid Events</p>
             </div>
@@ -293,32 +246,28 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {filteredEvents.map((event) => (
-                  <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg">
+                {filteredEvents.map((event: any) => (
+                  <div key={event._id} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex-1">
                       <h3 className="font-semibold">{event.title}</h3>
                       <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
-                        <span>{formatDate(event.date)}</span>
+                        <span>{formatDate(event.startDate)}</span>
                         <Badge variant="outline">{event.type}</Badge>
-                        <div className="flex items-center">
-                          <StarIcon className="h-4 w-4 text-yellow-400 mr-1" />
-                          {event.rating}
-                        </div>
                       </div>
                     </div>
                     
                     <div className="flex items-center space-x-6 text-center">
                       <div>
-                        <p className="text-lg font-semibold">{event.registrations}</p>
+                        <p className="text-lg font-semibold">{event.registrationCount}</p>
                         <p className="text-xs text-gray-600">Registered</p>
                       </div>
                       <div>
-                        <p className="text-lg font-semibold">{event.attendees}</p>
+                        <p className="text-lg font-semibold">{event.attendeeCount}</p>
                         <p className="text-xs text-gray-600">Attended</p>
                       </div>
                       <div>
                         <p className="text-lg font-semibold">
-                          {((event.attendees / event.registrations) * 100).toFixed(0)}%
+                          {event.registrationCount > 0 ? event.attendanceRate.toFixed(0) : 0}%
                         </p>
                         <p className="text-xs text-gray-600">Rate</p>
                       </div>
@@ -355,7 +304,7 @@ export default function AnalyticsPage() {
                         <div 
                           className="h-full bg-blue-500 rounded-full"
                           style={{ 
-                            width: `${(count / filteredEvents.length) * 100}%` 
+                            width: `${filteredEvents.length > 0 ? (count / filteredEvents.length) * 100 : 0}%` 
                           }}
                         />
                       </div>
@@ -388,7 +337,7 @@ export default function AnalyticsPage() {
                         <div 
                           className="h-full bg-purple-500 rounded-full"
                           style={{ 
-                            width: `${(count / filteredEvents.length) * 100}%` 
+                            width: `${filteredEvents.length > 0 ? (count / filteredEvents.length) * 100 : 0}%` 
                           }}
                         />
                       </div>

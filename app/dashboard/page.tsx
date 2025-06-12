@@ -1,54 +1,32 @@
 "use client";
 
 import { useAuth } from "@/providers/auth-provider";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Users, TrendingUp, Plus, Eye } from "lucide-react";
+import { CalendarDays, Users, TrendingUp, Plus, Eye, Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function DashboardPage() {
   const { user } = useAuth();
 
-  // Mock data for now - in real app this would come from Convex
-  const stats = {
-    organizer: {
-      totalEvents: 12,
-      totalAttendees: 450,
-      upcomingEvents: 3,
-      revenue: 2400,
-    },
-    attendee: {
-      eventsAttended: 8,
-      eventsRegistered: 3,
-      favoriteTech: "React",
-      networkingConnections: 24,
-    }
-  };
+  // Get user stats from Convex
+  const userStats = useQuery(
+    api.users.getUserStats,
+    user ? { userId: user._id as Id<"users"> } : "skip"
+  );
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: "React 19 Deep Dive",
-      date: "2025-06-15",
-      attendees: 45,
-      status: "published",
-    },
-    {
-      id: 2,
-      title: "AI & Machine Learning Workshop",
-      date: "2025-06-20",
-      attendees: 32,
-      status: "draft",
-    },
-    {
-      id: 3,
-      title: "Next.js Performance Optimization",
-      date: "2025-06-25",
-      attendees: 28,
-      status: "published",
-    },
-  ];
+  // Get user's events
+  const userEvents = useQuery(
+    api.events.getEventsByOrganizer,
+    user?.role === "organizer" ? { organizerId: user._id as Id<"users"> } : "skip"
+  );
+
+  // Get upcoming events for display
+  const upcomingEvents = useQuery(api.events.getUpcomingEvents, { limit: 3 });
 
   if (user?.role === "organizer") {
     return (
@@ -71,9 +49,9 @@ export default function DashboardPage() {
               <CalendarDays className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.organizer.totalEvents}</div>
+              <div className="text-2xl font-bold">{userEvents?.length || 0}</div>
               <p className="text-xs text-muted-foreground">
-                +2 from last month
+                Events organized
               </p>
             </CardContent>
           </Card>
@@ -84,9 +62,11 @@ export default function DashboardPage() {
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.organizer.totalAttendees}</div>
+              <div className="text-2xl font-bold">
+                {userEvents?.reduce((sum: number, event: any) => sum + (event.registrationCount || 0), 0) || 0}
+              </div>
               <p className="text-xs text-muted-foreground">
-                +15% from last month
+                Total registrations
               </p>
             </CardContent>
           </Card>
@@ -97,7 +77,9 @@ export default function DashboardPage() {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.organizer.upcomingEvents}</div>
+              <div className="text-2xl font-bold">
+                {userEvents?.filter((event: any) => new Date(event.startDate) > new Date()).length || 0}
+              </div>
               <p className="text-xs text-muted-foreground">
                 Next event in 3 days
               </p>
@@ -110,9 +92,11 @@ export default function DashboardPage() {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.organizer.revenue}</div>
+              <div className="text-2xl font-bold">
+                ${userEvents?.reduce((sum: number, event: any) => sum + ((event.price || 0) * (event.registrationCount || 0)), 0) || 0}
+              </div>
               <p className="text-xs text-muted-foreground">
-                +8% from last month
+                Total revenue
               </p>
             </CardContent>
           </Card>
@@ -160,7 +144,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents.map((event) => (
+              {upcomingEvents.map((event: any) => (
                 <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">{event.title}</h3>
@@ -210,9 +194,9 @@ export default function DashboardPage() {
             <CalendarDays className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendee.eventsAttended}</div>
+            <div className="text-2xl font-bold">{userStats?.eventsAttended || 0}</div>
             <p className="text-xs text-muted-foreground">
-              +2 this month
+              Completed events
             </p>
           </CardContent>
         </Card>
@@ -223,7 +207,7 @@ export default function DashboardPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendee.eventsRegistered}</div>
+            <div className="text-2xl font-bold">{userStats?.eventsRegistered || 0}</div>
             <p className="text-xs text-muted-foreground">
               Upcoming events
             </p>
@@ -232,25 +216,25 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Favorite Tech</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Events</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendee.favoriteTech}</div>
+            <div className="text-2xl font-bold">{userStats?.totalEvents || 0}</div>
             <p className="text-xs text-muted-foreground">
-              Based on your activity
+              All time participation
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Connections</CardTitle>
+            <CardTitle className="text-sm font-medium">Learning Journey</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendee.networkingConnections}</div>
-            <p className="text-xs text-muted-foreground">                    People you&apos;ve met
+            <div className="text-2xl font-bold">Growing!</div>
+            <p className="text-xs text-muted-foreground">              Keep attending events
             </p>
           </CardContent>
         </Card>
@@ -298,7 +282,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {upcomingEvents.slice(0, 2).map((event) => (
+            {upcomingEvents.slice(0, 2).map((event: any) => (
               <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex-1">
                   <h3 className="font-medium text-gray-900">{event.title}</h3>

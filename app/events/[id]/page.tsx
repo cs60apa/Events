@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,65 +17,24 @@ import { useAuth } from "@/providers/auth-provider";
 export default function EventDetailPage() {
   const params = useParams();
   const { user } = useAuth();
-  const [isRegistered, setIsRegistered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const eventId = params.id as string;
 
-  // Mock event data - in real app this would come from Convex
-  const event = {
-    _id: params.id,
-    title: "React 19 Deep Dive Workshop",
-    description: "Join us for an intensive workshop exploring the latest features in React 19. We'll cover concurrent features, automatic batching, new hooks, and performance optimizations that will help you build better React applications.\n\nThis hands-on workshop includes:\n• Interactive coding sessions\n• Real-world examples\n• Q&A with React experts\n• Networking opportunities\n• Take-home resources",
-    startDate: "2025-06-15T14:00:00Z",
-    endDate: "2025-06-15T17:00:00Z",
-    type: "in-person" as const,
-    location: "Tech Hub San Francisco, 123 Market Street, San Francisco, CA 94103",
-    category: "Web Development",
-    tags: ["React", "JavaScript", "Frontend", "Workshop"],
-    registrationCount: 45,
-    maxAttendees: 60,
-    price: 25,
-    currency: "USD",
-    requirements: "Basic knowledge of React and JavaScript. Bring your laptop with Node.js installed.",
-    organizer: {
-      name: "Sarah Johnson",
-      bio: "Senior React Developer with 8+ years of experience building scalable web applications.",
-      company: "React Labs",
-      profileImage: "/api/placeholder/100/100"
-    },
-    speakers: [
-      {
-        name: "Sarah Johnson",
-        title: "Senior React Developer",
-        company: "React Labs",
-        bio: "Expert in React ecosystem with contributions to popular open-source projects.",
-        topic: "React 19 New Features",
-        profileImage: "/api/placeholder/80/80"
-      },
-      {
-        name: "Mike Chen",
-        title: "Frontend Architect", 
-        company: "Tech Corp",
-        bio: "Frontend architecture specialist focusing on performance optimization.",
-        topic: "Performance Best Practices",
-        profileImage: "/api/placeholder/80/80"
-      }
-    ],
-    agenda: [
-      { time: "2:00 PM", topic: "Welcome & Introductions", speaker: "Sarah Johnson", duration: 15 },
-      { time: "2:15 PM", topic: "React 19 Overview", speaker: "Sarah Johnson", duration: 45 },
-      { time: "3:00 PM", topic: "Hands-on Coding Session", speaker: "Sarah Johnson", duration: 60 },
-      { time: "4:00 PM", topic: "Performance Optimization", speaker: "Mike Chen", duration: 45 },
-      { time: "4:45 PM", topic: "Q&A and Networking", duration: 15 }
-    ],
-    opportunities: [
-      {
-        title: "Frontend Developer",
-        company: "React Labs",
-        type: "job",
-        description: "We're looking for passionate React developers to join our team."
-      }
-    ]
-  };
+  // Get event details from Convex
+  const event = useQuery(api.events.getEventById, { eventId: eventId as Id<"events"> });
+  
+  // Check if user is already registered
+  const userRegistrations = useQuery(
+    api.events.getEventRegistrations,
+    event ? { eventId: event._id } : "skip"
+  );
+  
+  const isRegistered = userRegistrations?.some((reg: any) => 
+    reg.userId === user?._id && reg.status !== "cancelled"
+  ) || false;
+
+  // Mutation for registering to event
+  const registerForEvent = useMutation(api.events.registerForEvent);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -113,11 +75,14 @@ export default function EventDetailPage() {
       return;
     }
 
+    if (!event) return;
+
     setIsLoading(true);
     try {
-      // In real app, this would call the Convex function
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setIsRegistered(true);
+      await registerForEvent({ 
+        eventId: event._id, 
+        userId: user._id as Id<"users"> 
+      });
     } catch (error) {
       console.error("Registration failed:", error);
     } finally {
@@ -125,7 +90,23 @@ export default function EventDetailPage() {
     }
   };
 
-  const spotsRemaining = event.maxAttendees - event.registrationCount;
+  // Show loading state
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="pt-16">
+          <div className="text-center py-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Loading...</h2>
+            <p className="text-gray-600">Loading event details...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  const spotsRemaining = event.maxAttendees ? event.maxAttendees - event.registrationCount : null;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,7 +157,7 @@ export default function EventDetailPage() {
 
                   {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {event.tags.map((tag) => (
+                    {event.tags.map((tag: string) => (
                       <Badge key={tag} variant="outline">
                         {tag}
                       </Badge>
@@ -211,7 +192,7 @@ export default function EventDetailPage() {
                         <CardTitle className="text-2xl">
                           {event.price === 0 ? 'Free' : `$${event.price}`}
                         </CardTitle>
-                        {spotsRemaining <= 10 && spotsRemaining > 0 && (
+                        {spotsRemaining && spotsRemaining <= 10 && spotsRemaining > 0 && (
                           <CardDescription className="text-orange-600">
                             Only {spotsRemaining} spots left!
                           </CardDescription>
@@ -280,7 +261,7 @@ export default function EventDetailPage() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-8">Speakers</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {event.speakers.map((speaker, index) => (
+                {event.speakers.map((speaker: any, index: number) => (
                   <Card key={index}>
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
@@ -313,7 +294,7 @@ export default function EventDetailPage() {
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y">
-                    {event.agenda.map((item, index) => (
+                    {event.agenda.map((item: any, index: number) => (
                       <div key={index} className="p-6 flex items-start gap-4">
                         <div className="text-sm font-medium text-gray-900 w-20">
                           {item.time}
@@ -342,7 +323,7 @@ export default function EventDetailPage() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-8">Opportunities</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {event.opportunities.map((opportunity, index) => (
+                {event.opportunities.map((opportunity: any, index: number) => (
                   <Card key={index}>
                     <CardHeader>
                       <div className="flex items-center justify-between">
