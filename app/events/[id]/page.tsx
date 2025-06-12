@@ -13,6 +13,7 @@ import { Calendar, MapPin, Users, Clock, Globe, Share, Heart, ExternalLink } fro
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
+import { Registration, Speaker, Opportunity, AgendaItem } from "@/lib/types";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -29,7 +30,7 @@ export default function EventDetailPage() {
     event ? { eventId: event._id } : "skip"
   );
   
-  const isRegistered = userRegistrations?.some((reg: any) => 
+  const isRegistered = userRegistrations?.some((reg: Registration) => 
     reg.userId === user?._id && reg.status !== "cancelled"
   ) || false;
 
@@ -261,7 +262,7 @@ export default function EventDetailPage() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-8">Speakers</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {event.speakers.map((speaker: any, index: number) => (
+                {event.speakers.map((speaker: Speaker, index: number) => (
                   <Card key={index}>
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">

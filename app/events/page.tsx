@@ -12,6 +12,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Calendar, MapPin, Users, Search } from "lucide-react";
 import Link from "next/link";
+import { Event } from "@/lib/types";
 
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,7 +71,7 @@ export default function EventsPage() {
   };
 
   // Filter events based on search term (since we already filter by category/type in the query)
-  const filteredEvents = (allEvents || []).filter((event: any) => {
+  const filteredEvents = (allEvents || []).filter((event: Event) => {
     if (!searchTerm) return true;
     
     const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

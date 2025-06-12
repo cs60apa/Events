@@ -7,8 +7,9 @@ import { Id } from "@/convex/_generated/dataModel";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, Users, TrendingUp, Plus, Eye, Calendar } from "lucide-react";
+import { CalendarDays, Users, TrendingUp, Plus, Eye } from "lucide-react";
 import Link from "next/link";
+import { Event, UserStats } from "@/lib/types";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -63,7 +64,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {userEvents?.reduce((sum: number, event: any) => sum + (event.registrationCount || 0), 0) || 0}
+                {userEvents?.reduce((sum: number, event: Event) => sum + (event.registrationCount || 0), 0) || 0}
               </div>
               <p className="text-xs text-muted-foreground">
                 Total registrations
@@ -78,7 +79,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                {userEvents?.filter((event: any) => new Date(event.startDate) > new Date()).length || 0}
+                {userEvents?.filter((event: Event) => new Date(event.startDate) > new Date()).length || 0}
               </div>
               <p className="text-xs text-muted-foreground">
                 Next event in 3 days
@@ -93,7 +94,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${userEvents?.reduce((sum: number, event: any) => sum + ((event.price || 0) * (event.registrationCount || 0)), 0) || 0}
+                ${userEvents?.reduce((sum: number, event: Event) => sum + ((event.price || 0) * (event.registrationCount || 0)), 0) || 0}
               </div>
               <p className="text-xs text-muted-foreground">
                 Total revenue
@@ -144,12 +145,12 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents.map((event: any) => (
-                <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg">
+              {upcomingEvents.map((event: Event) => (
+                <div key={event._id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">{event.title}</h3>
                     <p className="text-sm text-gray-500">
-                      {new Date(event.date).toLocaleDateString('en-US', {
+                      {new Date(event.startDate).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
                         year: 'numeric'
@@ -158,7 +159,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="text-sm text-gray-500">
-                      {event.attendees} attendees
+                      {event.registrationCount} attendees
                     </div>
                     <Badge variant={event.status === 'published' ? 'default' : 'secondary'}>
                       {event.status}
@@ -282,22 +283,21 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {upcomingEvents.slice(0, 2).map((event: any) => (
-              <div key={event.id} className="flex items-center justify-between p-4 border rounded-lg">
+            {upcomingEvents.slice(0, 2).map((event: Event) => (
+              <div key={event._id} className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{event.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    {new Date(event.date).toLocaleDateString('en-US', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric'
-                    })}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-gray-500">
-                    {event.attendees} attending
+                  <h3 className="font-medium text-gray-900">{event.title}</h3>                    <p className="text-sm text-gray-500">
+                      {new Date(event.startDate).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                      })}
+                    </p>
                   </div>
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm text-gray-500">
+                      {event.registrationCount} attending
+                    </div>
                   <Badge variant="default">
                     Registered
                   </Badge>
