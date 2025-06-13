@@ -281,13 +281,13 @@ export default function EventDetailPage() {
                       </div>
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">
-                          {event.organizer.name}
+                          {event.organizer?.name ?? "Unknown Organizer"}
                         </h4>
                         <p className="text-sm text-gray-600">
-                          {event.organizer.company}
+                          {event.organizer?.company ?? ""}
                         </p>
                         <p className="text-sm text-gray-700 mt-2">
-                          {event.organizer.bio}
+                          {event.organizer?.bio ?? ""}
                         </p>
                       </div>
                     </div>
