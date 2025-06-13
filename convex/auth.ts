@@ -59,8 +59,8 @@ export const signIn = mutation({
       };
     }
 
-    // Verify the password
-    const isPasswordValid = await bcrypt.compare(args.password, user.password);
+    // Verify the password - we know password exists from the check above
+    const isPasswordValid = await bcrypt.compare(args.password, user.password as string);
 
     if (!isPasswordValid) {
       return { success: false, error: "Invalid email or password" };
