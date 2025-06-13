@@ -51,6 +51,14 @@ export const signIn = mutation({
       return { success: false, error: "Invalid email or password" };
     }
 
+    // Check if user has a password (migration compatibility)
+    if (!user.password) {
+      return {
+        success: false,
+        error: "Please reset your password or create a new account",
+      };
+    }
+
     // Verify the password
     const isPasswordValid = await bcrypt.compare(args.password, user.password);
 
