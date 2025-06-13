@@ -34,7 +34,7 @@ export default function EventsPage() {
   // Get public events from Convex
   const allEvents = useQuery(api.events.getPublicEvents, {
     category: selectedCategory || undefined,
-    type: selectedType as "online" | "in-person" | "hybrid" | undefined,
+    type: selectedType ? (selectedType as "online" | "in-person" | "hybrid") : undefined,
   });
 
   const categories = [
