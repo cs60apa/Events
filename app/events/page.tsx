@@ -28,13 +28,13 @@ import { EventWithPopulatedOrganizer } from "@/lib/types";
 
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedType, setSelectedType] = useState("all");
 
   // Get public events from Convex
   const allEvents = useQuery(api.events.getPublicEvents, {
-    category: selectedCategory || undefined,
-    type: selectedType
+    category: selectedCategory && selectedCategory !== "all" ? selectedCategory : undefined,
+    type: selectedType && selectedType !== "all"
       ? (selectedType as "online" | "in-person" | "hybrid")
       : undefined,
   });
@@ -293,8 +293,8 @@ export default function EventsPage() {
                   className="mt-4"
                   onClick={() => {
                     setSearchTerm("");
-                    setSelectedCategory("");
-                    setSelectedType("");
+                    setSelectedCategory("all");
+                    setSelectedType("all");
                   }}
                 >
                   Clear Filters
