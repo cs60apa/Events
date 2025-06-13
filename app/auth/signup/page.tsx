@@ -12,7 +12,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CalendarDays, Mail, User, Building, MapPin } from "lucide-react";
+import {
+  CalendarDays,
+  Mail,
+  User,
+  Building,
+  MapPin,
+  Lock,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
@@ -23,48 +32,67 @@ export default function SignUpPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    password: "",
+    confirmPassword: "",
     role: "attendee" as "organizer" | "attendee",
     company: "",
     location: "",
     bio: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const router = useRouter();
   const { setUser } = useAuth();
-  const createUser = useMutation(api.users.createUser);
+  const signUp = useMutation(api.auth.signUp);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate password strength
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const userId = await createUser({
+      const result = await signUp({
         name: formData.name,
         email: formData.email,
+        password: formData.password,
         role: formData.role,
-        company: formData.company || undefined,
-        location: formData.location || undefined,
-        bio: formData.bio || undefined,
       });
 
-      // Set user in auth context
-      const user = {
-        _id: userId,
-        name: formData.name,
-        email: formData.email,
-        role: formData.role,
-        company: formData.company,
-        location: formData.location,
-        bio: formData.bio,
-      };
+      if (result.success && result.userId) {
+        // Create user object for auth context
+        const user = {
+          _id: result.userId,
+          name: formData.name,
+          email: formData.email,
+          role: formData.role,
+          company: formData.company,
+          location: formData.location,
+          bio: formData.bio,
+        };
 
-      setUser(user);
-      localStorage.setItem("currentUser", JSON.stringify(user));
-
-      router.push("/dashboard");
+        setUser(user);
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        router.push("/dashboard");
+      } else {
+        setError(result.error || "Sign up failed");
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
@@ -135,6 +163,72 @@ export default function SignUpPage() {
                     className="pl-10"
                     required
                   />
+                </div>
+              </div>
+
+              {/* Password */}
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Create a strong password"
+                    value={formData.password}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
+                    className="pl-10 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Password must be at least 8 characters long
+                </p>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm your password"
+                    value={formData.confirmPassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    className="pl-10 pr-10"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </div>
 

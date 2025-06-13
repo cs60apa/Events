@@ -27,7 +27,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  signIn: (email: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
   setUser: (user: User | null) => void;
 }
@@ -48,19 +48,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const signIn = async (email: string) => {
-    // This would normally handle authentication
-    // For now, we'll use a simple email-based auth
+  const signIn = async (email: string, password: string) => {
+    // This method is now handled by individual components
+    // using the Convex auth.signIn mutation directly
     setIsLoading(true);
     try {
-      // Store user data
-      const userData = { email, _id: Date.now().toString() } as User;
-      localStorage.setItem("currentUser", JSON.stringify(userData));
-      setUser(userData);
-      router.push("/dashboard");
+      // This is a placeholder - actual auth is handled in components
+      setIsLoading(false);
     } catch (error) {
       console.error("Sign in error:", error);
-    } finally {
       setIsLoading(false);
     }
   };

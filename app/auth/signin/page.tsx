@@ -36,7 +36,7 @@ export default function SignInPage() {
 
     try {
       const result = await signIn({ email, password });
-      
+
       if (result.success && result.user) {
         setUser(result.user);
         localStorage.setItem("currentUser", JSON.stringify(result.user));
