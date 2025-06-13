@@ -61,7 +61,7 @@ export default function EventDetailsPage() {
 
   const handleStatusToggle = async () => {
     if (!event) return;
-    
+
     const newStatus = event.status === "published" ? "draft" : "published";
     try {
       await updateEventStatus({
@@ -145,11 +145,7 @@ export default function EventDetailsPage() {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleStatusToggle}
-          >
+          <Button variant="outline" size="sm" onClick={handleStatusToggle}>
             {event.status === "published" ? "Unpublish" : "Publish"}
           </Button>
           <Link href={`/dashboard/events/${eventId}/edit`}>
