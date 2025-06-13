@@ -8,13 +8,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, MapPin, Users, Trophy, Zap, Globe } from "lucide-react";
 import Link from "next/link";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <Header />
 
       {/* Hero Section */}
       <section className="relative px-6 lg:px-8 pt-20 pb-24">
@@ -216,7 +213,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 }
