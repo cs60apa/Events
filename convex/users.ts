@@ -1,48 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const createUser = mutation({
-  args: {
-    email: v.string(),
-    name: v.string(),
-    role: v.union(v.literal("organizer"), v.literal("attendee")),
-    bio: v.optional(v.string()),
-    location: v.optional(v.string()),
-    company: v.optional(v.string()),
-    skills: v.optional(v.array(v.string())),
-    linkedinUrl: v.optional(v.string()),
-    twitterUrl: v.optional(v.string()),
-    githubUrl: v.optional(v.string()),
-    website: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const existingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .unique();
-
-    if (existingUser) {
-      throw new Error("User with this email already exists");
-    }
-
-    const userId = await ctx.db.insert("users", {
-      email: args.email,
-      name: args.name,
-      role: args.role,
-      bio: args.bio,
-      location: args.location,
-      company: args.company,
-      skills: args.skills,
-      linkedinUrl: args.linkedinUrl,
-      twitterUrl: args.twitterUrl,
-      githubUrl: args.githubUrl,
-      website: args.website,
-    });
-
-    return userId;
-  },
-});
-
 export const getUserByEmail = query({
   args: { email: v.string() },
   handler: async (ctx, args) => {
