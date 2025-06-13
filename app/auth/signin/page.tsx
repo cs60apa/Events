@@ -15,7 +15,7 @@ import { CalendarDays, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/auth-provider";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 
 export default function SignInPage() {
@@ -27,7 +27,7 @@ export default function SignInPage() {
 
   const router = useRouter();
   const { setUser } = useAuth();
-  const signIn = useMutation(api.auth.signIn);
+  const signIn = useAction(api.auth.signIn);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

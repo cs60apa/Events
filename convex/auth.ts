@@ -1,8 +1,21 @@
-import { mutation } from "./_generated/server";
+import { action, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import bcrypt from "bcryptjs";
+import { api } from "./_generated/api";
 
-export const signUp = mutation({
+// Query to get user by email
+export const getUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .unique();
+  },
+});
+
+// Internal mutation for creating user (called from action)
+export const createUserMutation = mutation({
   args: {
     email: v.string(),
     password: v.string(),
@@ -10,11 +23,30 @@ export const signUp = mutation({
     role: v.union(v.literal("organizer"), v.literal("attendee")),
   },
   handler: async (ctx, args) => {
-    // Check if user already exists
-    const existingUser = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .unique();
+    const userId = await ctx.db.insert("users", {
+      email: args.email,
+      password: args.password,
+      name: args.name,
+      role: args.role,
+    });
+
+    return userId;
+  },
+});
+
+// Action for signing up (handles password hashing)
+export const signUp = action({
+  args: {
+    email: v.string(),
+    password: v.string(),
+    name: v.string(),
+    role: v.union(v.literal("organizer"), v.literal("attendee")),
+  },
+  handler: async (ctx, args): Promise<{ success: boolean; userId?: any; error?: string }> => {
+    // Check if user already exists by calling the query
+    const existingUser = await ctx.runQuery(api.auth.getUserByEmail, {
+      email: args.email,
+    });
 
     if (existingUser) {
       return { success: false, error: "User with this email already exists" };
@@ -24,8 +56,8 @@ export const signUp = mutation({
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(args.password, saltRounds);
 
-    // Create new user
-    const userId = await ctx.db.insert("users", {
+    // Create new user by calling the mutation
+    const userId = await ctx.runMutation(api.auth.createUserMutation, {
       email: args.email,
       password: hashedPassword,
       name: args.name,
@@ -36,32 +68,30 @@ export const signUp = mutation({
   },
 });
 
-export const signIn = mutation({
+// Action for signing in (handles password verification)
+export const signIn = action({
   args: {
     email: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", args.email))
-      .unique();
+  handler: async (ctx, args): Promise<{ success: boolean; user?: any; error?: string }> => {
+    // Get user by calling the query
+    const user = await ctx.runQuery(api.auth.getUserByEmail, {
+      email: args.email,
+    });
 
     if (!user) {
       return { success: false, error: "Invalid email or password" };
     }
 
-    // Check if user has a password (migration compatibility)
+    // Handle migration case where user doesn't have password yet
     if (!user.password) {
-      return {
-        success: false,
-        error: "Please reset your password or create a new account",
-      };
+      return { success: false, error: "Please contact support to reset your password" };
     }
 
-    // Verify the password - we know password exists from the check above
-    const isPasswordValid = await bcrypt.compare(args.password, user.password as string);
-
+    // Verify the password
+    const isPasswordValid = await bcrypt.compare(args.password, user.password);
+    
     if (!isPasswordValid) {
       return { success: false, error: "Invalid email or password" };
     }

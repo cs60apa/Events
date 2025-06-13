@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/providers/auth-provider";
 
@@ -46,7 +46,7 @@ export default function SignUpPage() {
 
   const router = useRouter();
   const { setUser } = useAuth();
-  const signUp = useMutation(api.auth.signUp);
+  const signUp = useAction(api.auth.signUp);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
