@@ -4,8 +4,7 @@ import "./globals.css";
 import { ConvexProvider } from "@/providers/convex-provider";
 import { AuthProvider } from "@/providers/auth-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,9 +26,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <ConvexProvider>
           <AuthProvider>
-            <Header />
             {children}
-            <Footer />
             <Toaster />
           </AuthProvider>
         </ConvexProvider>
