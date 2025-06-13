@@ -136,3 +136,9 @@ export interface EventAnalytics {
   revenue?: number;
   averageRating?: number;
 }
+
+// Type for events returned by queries that populate the organizer
+export interface EventWithPopulatedOrganizer extends Omit<Event, 'organizer'> {
+  organizer: User | null;
+  registrationCount?: number;
+}

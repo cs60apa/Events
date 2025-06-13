@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Users, TrendingUp, Plus, Eye } from "lucide-react";
 import Link from "next/link";
-import { Event } from "@/lib/types";
+import { Event, EventWithPopulatedOrganizer } from "@/lib/types";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -166,7 +166,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents?.map((event: Event) => (
+              {upcomingEvents?.map((event: EventWithPopulatedOrganizer) => (
                 <div
                   key={event._id}
                   className="flex items-center justify-between p-4 border rounded-lg"
@@ -179,6 +179,9 @@ export default function DashboardPage() {
                         day: "numeric",
                         year: "numeric",
                       })}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      by {event.organizer?.name ?? "Unknown Organizer"}
                     </p>
                   </div>
                   <div className="flex items-center gap-4">
