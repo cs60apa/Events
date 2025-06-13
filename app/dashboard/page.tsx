@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CalendarDays, Users, TrendingUp, Plus, Eye } from "lucide-react";
 import Link from "next/link";
-import { Event, UserStats } from "@/lib/types";
+import { Event } from "@/lib/types";
 
 export default function DashboardPage() {
   const { user } = useAuth();

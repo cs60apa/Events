@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import { Registration } from "@/lib/types";
 
 export default function EventAttendeesPage() {
   const params = useParams();
@@ -58,7 +59,7 @@ export default function EventAttendeesPage() {
 
   // Filter registrations based on search and tab
   const filteredRegistrations = (registrations || []).filter(
-    (registration: any) => {
+    (registration: Registration) => {
       const user = registration.user;
       if (!user) return false;
 
@@ -129,7 +130,7 @@ export default function EventAttendeesPage() {
   const exportAttendees = () => {
     const csvContent = [
       ["Name", "Email", "Company", "Location", "Status", "Registration Date"],
-      ...filteredRegistrations.map((reg: any) => [
+      ...filteredRegistrations.map((reg: Registration) => [
         reg.user?.name || "",
         reg.user?.email || "",
         reg.user?.company || "",
@@ -183,13 +184,13 @@ export default function EventAttendeesPage() {
   }
 
   const registeredCount = registrations.filter(
-    (r: any) => r.status === "registered"
+    (r: Registration) => r.status === "registered"
   ).length;
   const attendedCount = registrations.filter(
-    (r: any) => r.status === "attended"
+    (r: Registration) => r.status === "attended"
   ).length;
   const cancelledCount = registrations.filter(
-    (r: any) => r.status === "cancelled"
+    (r: Registration) => r.status === "cancelled"
   ).length;
 
   return (
@@ -286,7 +287,7 @@ export default function EventAttendeesPage() {
             </Card>
           ) : (
             <div className="space-y-4">
-              {filteredRegistrations.map((registration: any) => (
+              {filteredRegistrations.map((registration: Registration) => (
                 <Card
                   key={registration._id}
                   className="hover:shadow-md transition-shadow"

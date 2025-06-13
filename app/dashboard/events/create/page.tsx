@@ -27,6 +27,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@/providers/auth-provider";
+import { Id } from "@/convex/_generated/dataModel";
 
 export default function CreateEventPage() {
   const [formData, setFormData] = useState({
@@ -98,7 +99,7 @@ export default function CreateEventPage() {
       const eventId = await createEvent({
         title: formData.title,
         description: formData.description,
-        organizer: user._id,
+        organizer: user._id as Id<"users">,
         type: formData.type,
         location: formData.location || undefined,
         virtualLink: formData.virtualLink || undefined,

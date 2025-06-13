@@ -80,15 +80,22 @@ export default function AnalyticsPage() {
     "data-science": filteredEvents.filter(
       (e: EventAnalytics) => e.category === "Data Science"
     ).length,
-    devops: filteredEvents.filter((e: EventAnalytics) => e.category === "DevOps").length,
-    design: filteredEvents.filter((e: EventAnalytics) => e.category === "Design").length,
+    devops: filteredEvents.filter(
+      (e: EventAnalytics) => e.category === "DevOps"
+    ).length,
+    design: filteredEvents.filter(
+      (e: EventAnalytics) => e.category === "Design"
+    ).length,
   };
 
   const typeStats = {
-    online: filteredEvents.filter((e: EventAnalytics) => e.type === "online").length,
-    "in-person": filteredEvents.filter((e: EventAnalytics) => e.type === "in-person")
+    online: filteredEvents.filter((e: EventAnalytics) => e.type === "online")
       .length,
-    hybrid: filteredEvents.filter((e: EventAnalytics) => e.type === "hybrid").length,
+    "in-person": filteredEvents.filter(
+      (e: EventAnalytics) => e.type === "in-person"
+    ).length,
+    hybrid: filteredEvents.filter((e: EventAnalytics) => e.type === "hybrid")
+      .length,
   };
 
   if (!user || user.role !== "organizer") {
@@ -279,8 +286,9 @@ export default function AnalyticsPage() {
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
                 {
-                  filteredEvents.filter((e: EventAnalytics) => e.revenue && e.revenue > 0)
-                    .length
+                  filteredEvents.filter(
+                    (e: EventAnalytics) => e.revenue && e.revenue > 0
+                  ).length
                 }
               </p>
               <p className="text-sm text-gray-600">Paid Events</p>

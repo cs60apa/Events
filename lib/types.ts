@@ -57,7 +57,7 @@ export interface Registration {
     comment: string;
     wouldRecommend: boolean;
   };
-  user?: User; // Populated in queries
+  user?: User | null; // Populated in queries
 }
 
 export interface AgendaItem {

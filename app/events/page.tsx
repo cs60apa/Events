@@ -193,7 +193,7 @@ export default function EventsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filteredEvents.map((event: any) => (
+              {filteredEvents.map((event: Event) => (
                 <Card
                   key={event._id}
                   className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -248,7 +248,11 @@ export default function EventsPage() {
                         {event.price === 0 ? "Free" : `$${event.price}`}
                       </div>
                       <div className="text-sm text-gray-500">
-                        by {event.organizer.name}
+                        by{" "}
+                        {typeof event.organizer === "object" &&
+                        event.organizer.name
+                          ? event.organizer.name
+                          : "Organizer"}
                       </div>
                     </div>
 

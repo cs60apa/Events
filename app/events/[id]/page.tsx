@@ -347,7 +347,7 @@ export default function EventDetailPage() {
               <Card>
                 <CardContent className="p-0">
                   <div className="divide-y">
-                    {event.agenda.map((item: any, index: number) => (
+                    {event.agenda.map((item: AgendaItem, index: number) => (
                       <div key={index} className="p-6 flex items-start gap-4">
                         <div className="text-sm font-medium text-gray-900 w-20">
                           {item.time}
@@ -384,30 +384,32 @@ export default function EventDetailPage() {
                 Opportunities
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {event.opportunities.map((opportunity: any, index: number) => (
-                  <Card key={index}>
-                    <CardHeader>
-                      <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg">
-                          {opportunity.title}
-                        </CardTitle>
-                        <Badge variant="secondary" className="capitalize">
-                          {opportunity.type}
-                        </Badge>
-                      </div>
-                      <CardDescription>{opportunity.company}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-gray-700 mb-4">
-                        {opportunity.description}
-                      </p>
-                      <Button variant="outline" size="sm">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Learn More
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
+                {event.opportunities.map(
+                  (opportunity: Opportunity, index: number) => (
+                    <Card key={index}>
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-lg">
+                            {opportunity.title}
+                          </CardTitle>
+                          <Badge variant="secondary" className="capitalize">
+                            {opportunity.type}
+                          </Badge>
+                        </div>
+                        <CardDescription>{opportunity.company}</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-700 mb-4">
+                          {opportunity.description}
+                        </p>
+                        <Button variant="outline" size="sm">
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Learn More
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  )
+                )}
               </div>
             </div>
           </section>
