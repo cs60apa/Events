@@ -98,7 +98,7 @@ export default function CreateEventPage() {
       const eventId = await createEvent({
         title: formData.title,
         description: formData.description,
-        organizer: user._id as string,
+        organizer: user._id,
         type: formData.type,
         location: formData.location || undefined,
         virtualLink: formData.virtualLink || undefined,
