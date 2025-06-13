@@ -162,7 +162,7 @@ export default function EventsPage() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map((category) => (
                       <SelectItem key={category} value={category}>
                         {category}
@@ -176,7 +176,7 @@ export default function EventsPage() {
                     <SelectValue placeholder="Event Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Types</SelectItem>
+                    <SelectItem value="all">All Types</SelectItem>
                     <SelectItem value="online">Online</SelectItem>
                     <SelectItem value="in-person">In-Person</SelectItem>
                     <SelectItem value="hybrid">Hybrid</SelectItem>
