@@ -24,7 +24,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Calendar, MapPin, Users, Search } from "lucide-react";
 import Link from "next/link";
-import { Event } from "@/lib/types";
+import { EventWithPopulatedOrganizer } from "@/lib/types";
 
 export default function EventsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -83,18 +83,20 @@ export default function EventsPage() {
   };
 
   // Filter events based on search term (since we already filter by category/type in the query)
-  const filteredEvents = (allEvents || []).filter((event: Event) => {
-    if (!searchTerm) return true;
+  const filteredEvents = (allEvents || []).filter(
+    (event: EventWithPopulatedOrganizer) => {
+      if (!searchTerm) return true;
 
-    const matchesSearch =
-      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      event.tags?.some((tag: string) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      const matchesSearch =
+        event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        event.tags?.some((tag: string) =>
+          tag.toLowerCase().includes(searchTerm.toLowerCase())
+        );
 
-    return matchesSearch;
-  });
+      return matchesSearch;
+    }
+  );
 
   // Show loading state
   if (allEvents === undefined) {
@@ -193,7 +195,7 @@ export default function EventsPage() {
             </div>
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filteredEvents.map((event: Event) => (
+              {filteredEvents.map((event: EventWithPopulatedOrganizer) => (
                 <Card
                   key={event._id}
                   className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -248,11 +250,7 @@ export default function EventsPage() {
                         {event.price === 0 ? "Free" : `$${event.price}`}
                       </div>
                       <div className="text-sm text-gray-500">
-                        by{" "}
-                        {typeof event.organizer === "object" &&
-                        event.organizer.name
-                          ? event.organizer.name
-                          : "Organizer"}
+                        by {event.organizer?.name ?? "Unknown Organizer"}
                       </div>
                     </div>
 

@@ -322,29 +322,31 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {upcomingEvents?.slice(0, 2).map((event: EventWithPopulatedOrganizer) => (
-              <div
-                key={event._id}
-                className="flex items-center justify-between p-4 border rounded-lg"
-              >
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{event.title}</h3>{" "}
-                  <p className="text-sm text-gray-500">
-                    {new Date(event.startDate).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-gray-500">
-                    {event.registrationCount} attending
+            {upcomingEvents
+              ?.slice(0, 2)
+              .map((event: EventWithPopulatedOrganizer) => (
+                <div
+                  key={event._id}
+                  className="flex items-center justify-between p-4 border rounded-lg"
+                >
+                  <div className="flex-1">
+                    <h3 className="font-medium text-gray-900">{event.title}</h3>{" "}
+                    <p className="text-sm text-gray-500">
+                      {new Date(event.startDate).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
                   </div>
-                  <Badge variant="default">Registered</Badge>
+                  <div className="flex items-center gap-4">
+                    <div className="text-sm text-gray-500">
+                      {event.registrationCount} attending
+                    </div>
+                    <Badge variant="default">Registered</Badge>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </CardContent>
       </Card>
