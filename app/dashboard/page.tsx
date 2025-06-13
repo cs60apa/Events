@@ -166,7 +166,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {upcomingEvents.map((event: Event) => (
+              {upcomingEvents?.map((event: Event) => (
                 <div
                   key={event._id}
                   className="flex items-center justify-between p-4 border rounded-lg"
@@ -319,7 +319,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {upcomingEvents.slice(0, 2).map((event: Event) => (
+            {upcomingEvents?.slice(0, 2).map((event: Event) => (
               <div
                 key={event._id}
                 className="flex items-center justify-between p-4 border rounded-lg"
