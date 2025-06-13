@@ -43,7 +43,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Check if user is stored in localStorage
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        // Check if the user ID is a valid Convex ID (not a timestamp)
+        if (parsedUser._id && parsedUser._id.length > 20 && !parsedUser._id.match(/^\d+$/)) {
+          setUser(parsedUser);
+        } else {
+          // Clear invalid user data
+          localStorage.removeItem("currentUser");
+        }
+      } catch (error) {
+        // Clear corrupted data
+        localStorage.removeItem("currentUser");
+      }
     }
     setIsLoading(false);
   }, []);

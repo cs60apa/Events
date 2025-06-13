@@ -4,7 +4,7 @@ import { v } from "convex/values";
 export default defineSchema({
   users: defineTable({
     email: v.string(),
-    password: v.optional(v.string()), // Temporarily optional for migration
+    password: v.string(), // Now required since we cleared old data
     name: v.string(),
     role: v.union(v.literal("organizer"), v.literal("attendee")),
     bio: v.optional(v.string()),

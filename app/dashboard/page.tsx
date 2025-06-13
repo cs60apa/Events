@@ -20,16 +20,22 @@ import { Event, EventWithPopulatedOrganizer } from "@/lib/types";
 export default function DashboardPage() {
   const { user } = useAuth();
 
+  // Helper function to check if ID is a valid Convex ID
+  const isValidConvexId = (id: string): boolean => {
+    // Convex IDs typically start with a table prefix and are longer than simple timestamps
+    return id.length > 20 && !id.match(/^\d+$/);
+  };
+
   // Get user stats from Convex
   const userStats = useQuery(
     api.users.getUserStats,
-    user ? { userId: user._id as Id<"users"> } : "skip"
+    user && isValidConvexId(user._id) ? { userId: user._id as Id<"users"> } : "skip"
   );
 
   // Get user's events
   const userEvents = useQuery(
     api.events.getEventsByOrganizer,
-    user?.role === "organizer"
+    user?.role === "organizer" && isValidConvexId(user._id)
       ? { organizerId: user._id as Id<"users"> }
       : "skip"
   );
