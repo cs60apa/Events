@@ -46,7 +46,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const parsedUser = JSON.parse(storedUser);
         // Check if the user ID is a valid Convex ID (not a timestamp)
-        if (parsedUser._id && parsedUser._id.length > 20 && !parsedUser._id.match(/^\d+$/)) {
+        if (
+          parsedUser._id &&
+          parsedUser._id.length > 20 &&
+          !parsedUser._id.match(/^\d+$/)
+        ) {
           setUser(parsedUser);
         } else {
           // Clear invalid user data

@@ -42,7 +42,10 @@ export const signUp = action({
     name: v.string(),
     role: v.union(v.literal("organizer"), v.literal("attendee")),
   },
-  handler: async (ctx, args): Promise<{ success: boolean; userId?: any; error?: string }> => {
+  handler: async (
+    ctx,
+    args
+  ): Promise<{ success: boolean; userId?: any; error?: string }> => {
     // Check if user already exists by calling the query
     const existingUser = await ctx.runQuery(api.auth.getUserByEmail, {
       email: args.email,
@@ -74,7 +77,10 @@ export const signIn = action({
     email: v.string(),
     password: v.string(),
   },
-  handler: async (ctx, args): Promise<{ success: boolean; user?: any; error?: string }> => {
+  handler: async (
+    ctx,
+    args
+  ): Promise<{ success: boolean; user?: any; error?: string }> => {
     // Get user by calling the query
     const user = await ctx.runQuery(api.auth.getUserByEmail, {
       email: args.email,
@@ -86,12 +92,15 @@ export const signIn = action({
 
     // Handle migration case where user doesn't have password yet
     if (!user.password) {
-      return { success: false, error: "Please contact support to reset your password" };
+      return {
+        success: false,
+        error: "Please contact support to reset your password",
+      };
     }
 
     // Verify the password
     const isPasswordValid = await bcrypt.compare(args.password, user.password);
-    
+
     if (!isPasswordValid) {
       return { success: false, error: "Invalid email or password" };
     }

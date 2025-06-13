@@ -29,7 +29,9 @@ export default function DashboardPage() {
   // Get user stats from Convex
   const userStats = useQuery(
     api.users.getUserStats,
-    user && isValidConvexId(user._id) ? { userId: user._id as Id<"users"> } : "skip"
+    user && isValidConvexId(user._id)
+      ? { userId: user._id as Id<"users"> }
+      : "skip"
   );
 
   // Get user's events
