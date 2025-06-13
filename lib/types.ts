@@ -131,6 +131,7 @@ export interface EventAnalytics {
   type: "online" | "in-person" | "hybrid";
   startDate: string;
   registrationCount: number;
+  attendeeCount: number;
   attendanceRate: number;
   revenue?: number;
   averageRating?: number;

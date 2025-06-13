@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EventAnalytics } from "@/lib/types";
 import {
   BarChart3Icon,
   TrendingUpIcon,
@@ -42,22 +43,22 @@ export default function AnalyticsPage() {
 
   // Filter events based on category
   const filteredEvents = (analyticsData || []).filter(
-    (event: any) =>
+    (event: EventAnalytics) =>
       selectedCategory === "all" || event.category === selectedCategory
   );
 
   const totalRegistrations = filteredEvents.reduce(
-    (sum: number, event: any) => sum + event.registrationCount,
+    (sum: number, event: EventAnalytics) => sum + event.registrationCount,
     0
   );
   const totalRevenue = filteredEvents.reduce(
-    (sum: number, event: any) => sum + (event.revenue || 0),
+    (sum: number, event: EventAnalytics) => sum + (event.revenue || 0),
     0
   );
   const averageAttendanceRate =
     filteredEvents.length > 0
       ? filteredEvents.reduce(
-          (sum: number, event: any) => sum + event.attendanceRate,
+          (sum: number, event: EventAnalytics) => sum + event.attendanceRate,
           0
         ) / filteredEvents.length
       : 0;
@@ -66,27 +67,28 @@ export default function AnalyticsPage() {
   const averageRating =
     filteredEvents.length > 0
       ? filteredEvents.reduce(
-          (sum: number, event: any) => sum + (event.averageRating || 0),
+          (sum: number, event: EventAnalytics) =>
+            sum + (event.averageRating || 0),
           0
         ) / filteredEvents.length
       : 0;
 
   const categoryStats = {
     "web-development": filteredEvents.filter(
-      (e: any) => e.category === "Web Development"
+      (e: EventAnalytics) => e.category === "Web Development"
     ).length,
     "data-science": filteredEvents.filter(
-      (e: any) => e.category === "Data Science"
+      (e: EventAnalytics) => e.category === "Data Science"
     ).length,
-    devops: filteredEvents.filter((e: any) => e.category === "DevOps").length,
-    design: filteredEvents.filter((e: any) => e.category === "Design").length,
+    devops: filteredEvents.filter((e: EventAnalytics) => e.category === "DevOps").length,
+    design: filteredEvents.filter((e: EventAnalytics) => e.category === "Design").length,
   };
 
   const typeStats = {
-    online: filteredEvents.filter((e: any) => e.type === "online").length,
-    "in-person": filteredEvents.filter((e: any) => e.type === "in-person")
+    online: filteredEvents.filter((e: EventAnalytics) => e.type === "online").length,
+    "in-person": filteredEvents.filter((e: EventAnalytics) => e.type === "in-person")
       .length,
-    hybrid: filteredEvents.filter((e: any) => e.type === "hybrid").length,
+    hybrid: filteredEvents.filter((e: EventAnalytics) => e.type === "hybrid").length,
   };
 
   if (!user || user.role !== "organizer") {
@@ -277,7 +279,7 @@ export default function AnalyticsPage() {
             <div className="text-center">
               <p className="text-2xl font-bold text-purple-600">
                 {
-                  filteredEvents.filter((e: any) => e.revenue && e.revenue > 0)
+                  filteredEvents.filter((e: EventAnalytics) => e.revenue && e.revenue > 0)
                     .length
                 }
               </p>
@@ -302,7 +304,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {filteredEvents.map((event: any) => (
+                {filteredEvents.map((event: EventAnalytics) => (
                   <div
                     key={event._id}
                     className="flex items-center justify-between p-4 border rounded-lg"
