@@ -165,7 +165,7 @@ export function Footer() {
               © 2025 TechMeet. All rights reserved.
             </p>
             <p className="text-sm text-gray-400 mt-2 md:mt-0">
-              Made with ❤️ for the tech community
+              Made with ❤️ by Mark Sikaundi
             </p>
           </div>
         </div>
