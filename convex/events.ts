@@ -417,3 +417,52 @@ export const getEventAnalytics = query({
     );
   },
 });
+
+// Debug query to see all events
+export const getAllEvents = query({
+  handler: async (ctx) => {
+    const events = await ctx.db.query("events").collect();
+    return events;
+  },
+});
+
+// Mutation to publish an event
+export const publishEvent = mutation({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.eventId, {
+      status: "published",
+    });
+    return { success: true };
+  },
+});
+
+// Mutation to make events public
+export const makeEventPublic = mutation({
+  args: { eventId: v.id("events") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.eventId, {
+      isPublic: true,
+    });
+    return { success: true };
+  },
+});
+
+// Bulk mutation to publish all draft events
+export const publishAllDraftEvents = mutation({
+  handler: async (ctx) => {
+    const draftEvents = await ctx.db
+      .query("events")
+      .withIndex("by_status", (q) => q.eq("status", "draft"))
+      .collect();
+
+    for (const event of draftEvents) {
+      await ctx.db.patch(event._id, {
+        status: "published",
+        isPublic: true,
+      });
+    }
+
+    return { publishedCount: draftEvents.length };
+  },
+});

@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -82,7 +88,7 @@ export default function EventsPage() {
     }
   };
 
-  // Filter events based on search term
+  // Filter events based on search term (since we already filter by category/type in the query)
   const filteredEvents = (allEvents || []).filter(
     (event: EventWithPopulatedOrganizer) => {
       if (!searchTerm) return true;
@@ -109,9 +115,7 @@ export default function EventsPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Loading Events...
             </h2>
-            <p className="text-gray-600">
-              Discovering amazing tech events for you
-            </p>
+            <p className="text-gray-600">Discovering amazing tech events for you</p>
           </div>
         </div>
         <Footer />
@@ -128,9 +132,9 @@ export default function EventsPage() {
         <section className="relative bg-gradient-to-br from-violet-600 via-blue-600 to-cyan-500 text-white py-24 overflow-hidden">
           {/* Background Pattern */}
           <div className="absolute inset-0 bg-black/10">
-            <div className="absolute inset-0 opacity-50"></div>
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-50"></div>
           </div>
-
+          
           <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
             <div className="text-center">
               <div className="mb-6 inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-sm font-medium text-white ring-1 ring-white/20 backdrop-blur-sm">
@@ -140,8 +144,7 @@ export default function EventsPage() {
                 Tech Events
               </h1>
               <p className="mt-6 text-xl leading-8 text-blue-100 max-w-2xl mx-auto">
-                Connect with the community, learn from experts, and stay ahead
-                of the curve with curated tech events
+                Connect with the community, learn from experts, and stay ahead of the curve with curated tech events
               </p>
               <div className="mt-8 flex justify-center">
                 <div className="flex items-center space-x-6 text-sm text-blue-200">
@@ -245,8 +248,8 @@ export default function EventsPage() {
                   {/* Event Type Badge */}
                   <div className="absolute top-4 right-4 z-10">
                     <div className="flex items-center space-x-2">
-                      <Badge
-                        variant="secondary"
+                      <Badge 
+                        variant="secondary" 
                         className="bg-white/90 text-gray-700 border-0 rounded-full px-3 py-1 text-xs font-medium shadow-sm"
                       >
                         {event.category}
@@ -289,8 +292,7 @@ export default function EventsPage() {
                           <Calendar className="h-3 w-3 text-blue-600" />
                         </div>
                         <span className="font-medium">
-                          {formatDate(event.startDate)} at{" "}
-                          {formatTime(event.startDate)}
+                          {formatDate(event.startDate)} at {formatTime(event.startDate)}
                         </span>
                       </div>
 
@@ -300,9 +302,7 @@ export default function EventsPage() {
                           <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center mr-3">
                             <MapPin className="h-3 w-3 text-green-600" />
                           </div>
-                          <span className="font-medium truncate">
-                            {event.location}
-                          </span>
+                          <span className="font-medium truncate">{event.location}</span>
                         </div>
                       )}
 
@@ -321,29 +321,19 @@ export default function EventsPage() {
                     {/* Organizer */}
                     <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                       <div className="text-sm text-gray-500">
-                        by{" "}
-                        <span className="font-medium text-gray-700">
-                          {event.organizer?.name ?? "Unknown Organizer"}
-                        </span>
+                        by <span className="font-medium text-gray-700">{event.organizer?.name ?? "Unknown Organizer"}</span>
                       </div>
                     </div>
 
                     {/* Tags */}
                     <div className="flex flex-wrap gap-2">
                       {event.tags.slice(0, 3).map((tag: string) => (
-                        <Badge
-                          key={tag}
-                          variant="outline"
-                          className="text-xs border-gray-200 text-gray-600 hover:bg-gray-50 rounded-full"
-                        >
+                        <Badge key={tag} variant="outline" className="text-xs border-gray-200 text-gray-600 hover:bg-gray-50 rounded-full">
                           {tag}
                         </Badge>
                       ))}
                       {event.tags.length > 3 && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs border-gray-200 text-gray-600 rounded-full"
-                        >
+                        <Badge variant="outline" className="text-xs border-gray-200 text-gray-600 rounded-full">
                           +{event.tags.length - 3}
                         </Badge>
                       )}
@@ -353,9 +343,7 @@ export default function EventsPage() {
                     <Link href={`/events/${event._id}`} className="block">
                       <Button className="w-full mt-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 rounded-xl h-12 font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
                         View Details
-                        <span className="ml-2 group-hover:translate-x-1 transition-transform duration-200">
-                          →
-                        </span>
+                        <span className="ml-2 group-hover:translate-x-1 transition-transform duration-200">→</span>
                       </Button>
                     </Link>
                   </CardContent>
@@ -372,8 +360,7 @@ export default function EventsPage() {
                   No events found
                 </h3>
                 <p className="text-gray-600 text-lg mb-8 max-w-md mx-auto">
-                  We couldn't find any events matching your criteria. Try
-                  adjusting your filters or search terms.
+                  We couldn't find any events matching your criteria. Try adjusting your filters or search terms.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
@@ -387,7 +374,7 @@ export default function EventsPage() {
                   >
                     Clear All Filters
                   </Button>
-                  <Button
+                  <Button 
                     className="rounded-xl h-12 px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
                     onClick={() => window.location.reload()}
                   >

@@ -15,7 +15,6 @@ import type {
 } from "convex/server";
 import type * as auth from "../auth.js";
 import type * as events from "../events.js";
-import type * as migration from "../migration.js";
 import type * as notifications from "../notifications.js";
 import type * as users from "../users.js";
 
@@ -30,7 +29,6 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   events: typeof events;
-  migration: typeof migration;
   notifications: typeof notifications;
   users: typeof users;
 }>;
