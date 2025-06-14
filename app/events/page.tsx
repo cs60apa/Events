@@ -43,9 +43,6 @@ export default function EventsPage() {
         : undefined,
   });
 
-  // Loading state
-  const isLoading = allEvents === undefined;
-
   const categories = [
     "Web Development",
     "Mobile Development",
@@ -199,30 +196,12 @@ export default function EventsPage() {
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900">
-                {isLoading ? "Loading..." : `${filteredEvents.length} Events Found`}
+                {filteredEvents.length} Events Found
               </h2>
             </div>
 
-            {isLoading ? (
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="overflow-hidden">
-                    <CardHeader className="pb-4">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                      <div className="h-6 bg-gray-200 rounded animate-pulse mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {filteredEvents.map((event: EventWithPopulatedOrganizer) => (
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filteredEvents.map((event: EventWithPopulatedOrganizer) => (
                 <Card
                   key={event._id}
                   className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -302,10 +281,9 @@ export default function EventsPage() {
                   </CardContent>
                 </Card>
               ))}
-              </div>
-            )}
+            </div>
 
-            {!isLoading && filteredEvents.length === 0 && (
+            {filteredEvents.length === 0 && (
               <div className="text-center py-12">
                 <div className="text-gray-400 text-6xl mb-4">🔍</div>
                 <h3 className="text-xl font-medium text-gray-900 mb-2">
