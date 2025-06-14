@@ -417,3 +417,22 @@ export const getEventAnalytics = query({
     );
   },
 });
+
+export const debugGetAllEvents = query({
+  handler: async (ctx) => {
+    const allEvents = await ctx.db.query("events").collect();
+    return {
+      totalEvents: allEvents.length,
+      publishedEvents: allEvents.filter(e => e.status === "published").length,
+      publicEvents: allEvents.filter(e => e.isPublic === true).length,
+      publishedAndPublicEvents: allEvents.filter(e => e.status === "published" && e.isPublic === true).length,
+      events: allEvents.map(e => ({
+        id: e._id,
+        title: e.title,
+        status: e.status,
+        isPublic: e.isPublic,
+        startDate: e.startDate
+      }))
+    };
+  },
+});
